@@ -17,13 +17,13 @@
         <div class="form-group row">
             <label for="start_date" class="col-sm-4 col-form-label">Start Date</label>
             <div class="col-sm-8">
-                <input type="date" min="<?php echo $training->start_date ?>" max="<?php echo $training->end_date; ?>" class="form-control" id="batch_start_date" name="batch_start_date" placeholder="Start Date">
+                <input type="date" min="<?php echo $training->start_date ?>" max="<?php echo $training->end_date; ?>" class="form-control" id="batch_start_date" name="batch_start_date">
             </div>
         </div>
         <div class="form-group row">
             <label for="end_date" class="col-sm-4 col-form-label">End Date</label>
             <div class="col-sm-8">
-                <input type="date" min="<?php echo $training->start_date ?>" max="<?php echo $training->end_date; ?>" class="form-control" id="batch_end_date" name="batch_end_date" placeholder="End Date">
+                <input type="date" min="<?php echo $training->start_date ?>" max="<?php echo $training->end_date; ?>" class="form-control" id="batch_end_date" name="batch_end_date">
             </div>
         </div>
         <div class="form-group row">
@@ -57,12 +57,13 @@
                 data: formData,
                 success: function(data) {
                     var jsonData = JSON.parse(data);
+                    window.location.search = '?tab=training';
                     if (jsonData.error) {
                         $('#message_form').html(jsonData.error);
                     }
                     if (jsonData.success) {
                         $('#message_form').html('<div class="text-success">Record Update Successfully.</div>');
-                        //location.reload();
+                        location.reload();
                     }
 
                 },

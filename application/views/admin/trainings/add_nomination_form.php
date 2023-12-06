@@ -48,6 +48,12 @@
                                     $('#district').val(jsonData.district);
                                     $('#address').val(jsonData.address);
                                     $('#user_mobile_number').val(jsonData.user_mobile_number);
+                                    if (jsonData.gender == 'Male') {
+                                        $('#male').prop('checked', true);
+                                    }
+                                    if (jsonData.gender == 'Female') {
+                                        $('#female').prop('checked', true);
+                                    }
 
                                 } else {
                                     $('#message').html('<div class="text-success">No record found. Please enter detail</div>');
@@ -71,7 +77,14 @@
                 <input type="text" class="form-control" id="father_name" name="father_name" placeholder="Father Name">
             </div>
         </div>
-
+        <div class="form-group row">
+            <label for="father_name" class="col-sm-4 col-form-label">Gender</label>
+            <div class="col-sm-8">
+                <input required type="radio" id="male" name="gender" value="Male"> Male
+                <span style="margin: 5px;"></span>
+                <input required type="radio" id="female" name="gender" value="Female"> Female
+            </div>
+        </div>
         <div class="form-group row">
             <label for="qualification" class="col-sm-4 col-form-label">Highest Qualification</label>
             <div class="col-sm-8">
@@ -94,8 +107,17 @@
         <div class="form-group row">
             <label for="mobile_no" class="col-sm-4 col-form-label">Mobile Number</label>
             <div class="col-sm-8">
-                <input type="text" class="form-control" id="user_mobile_number" name="user_mobile_number" placeholder="Mobile Number">
+                <input onfocus="addCountryCode()" minlength="13" maxlength="13" onkeydown="addCountryCode()" type="phone" class="form-control" id="user_mobile_number" name="user_mobile_number" placeholder="Mobile Number">
             </div>
+            <script>
+                function addCountryCode() {
+                    var mobileNumberInput = document.getElementById('user_mobile_number');
+                    // Check if the input doesn't already start with '+923'
+                    if (!mobileNumberInput.value.startsWith('+923')) {
+                        mobileNumberInput.value = '+923' + mobileNumberInput.value;
+                    }
+                }
+            </script>
         </div>
         <div class="form-group row">
             <label for="district" class="col-sm-4 col-form-label">District</label>
@@ -115,13 +137,22 @@
             </div>
         </div>
         <div id="message_form"></div>
-        <button type="submit">Submit</button>
+        <div style="text-align: center;">
+            <button class="btn btn-primary btn-sm" type="submit"><?php echo $title; ?></button>
+        </div>
 
     </form>
     <script>
         $('#nomination_form').submit(function(e) {
             e.preventDefault();
             var formData = $(this).serialize();
+
+            var mobileNumberInput = document.getElementById('user_mobile_number');
+            // Check if the input doesn't already start with '+923'
+            if (!mobileNumberInput.value.startsWith('+923')) {
+                alert("Please enter correct mobile number");
+                return false;
+            }
 
             $.ajax({
                 type: 'POST',
@@ -131,14 +162,17 @@
                     var jsonData = JSON.parse(data);
                     if (jsonData.error) {
                         $('#message_form').html(jsonData.error);
+                        return false;
                     }
+                    window.location.search = '?tab=nomination';
+                    //location.reload();
                     if (jsonData.user_id) {
                         $('#message_form').html('<div class="text-success">Record Add Successfully.</div>');
-                        //location.reload();
+                        location.reload();
                     }
                     if (jsonData.update) {
                         $('#message_form').html('<div class="text-success">Record Update Successfully.</div>');
-                        //location.reload();
+                        location.reload();
                     }
 
                 },

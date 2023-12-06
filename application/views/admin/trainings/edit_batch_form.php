@@ -57,6 +57,7 @@
                 url: '<?php echo site_url(ADMIN_DIR . "/trainings/update_training_batch"); ?>',
                 data: formData,
                 success: function(data) {
+                    window.location.search = '?tab=training';
                     var jsonData = JSON.parse(data);
                     if (jsonData.error) {
                         $('#message_form').html(jsonData.error);

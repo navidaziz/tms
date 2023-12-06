@@ -1,6 +1,6 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Trainings extends Admin_Controller
+class Facilitator extends Admin_Controller
 {
 
     /**
@@ -23,12 +23,188 @@ class Trainings extends Admin_Controller
      */
     public function index()
     {
-        $main_page = base_url() . ADMIN_DIR . $this->router->fetch_class() . "/view";
-        redirect($main_page);
+        $this->data["title"] = 'Facilitator Dashboard';
+        $this->data["view"] = ADMIN_DIR . "facilitator/index";
+        $this->load->view(ADMIN_DIR . "layout", $this->data);
     }
     //---------------------------------------------------------------
 
+    public function training_batch_session($training_batch_session_id)
+    {
 
+        $this->data['training_batch_session_id'] = (int) $training_batch_session_id;
+        $this->data["title"] = 'Training Batch Session Detail';
+        $this->data["view"] = ADMIN_DIR . "facilitator/training_batch_session";
+        $this->load->view(ADMIN_DIR . "layout", $this->data);
+    }
+
+    // Custom callback function to check the file type
+    public function file_check($str)
+    {
+
+        // Check if a file has been uploaded
+        if (empty($_FILES['document']['name'])) {
+            $this->form_validation->set_message('file_check', 'File or Document is required.');
+            return FALSE;
+        }
+
+        $allowed_types = array('gif', 'jpg', 'png', 'pdf', 'doc', 'docx', 'ppt');
+
+        $file_ext = pathinfo($_FILES['document']['name'], PATHINFO_EXTENSION);
+
+        if (!in_array($file_ext, $allowed_types)) {
+            $this->form_validation->set_message('file_check', 'The file type is not allowed');
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
+
+    public function upload_session_file()
+    {
+        $user_id = (int) $this->session->userdata('userId');
+        $training_batch_session_id = (int) $this->input->post('training_batch_session_id');
+        if ($this->input->post('study_meterial') == 'file') {
+            $validation_config = array(
+                array(
+                    "field"  =>  "document_detail",
+                    "label"  =>  "Document Detail",
+                    "rules"  =>  "required"
+                ),
+                array(
+                    "field"  =>  "document",
+                    "label"  =>  "Document",
+                    "rules"  =>  "callback_file_check"
+                )
+            );
+        } else {
+
+            $validation_config = array(
+                array(
+                    "field"  =>  "url_link_detail",
+                    "label"  =>  "Video Link Detail",
+                    "rules"  =>  "required"
+                ),
+                array(
+                    "field"  =>  "url_link",
+                    "label"  =>  "Youtube Video Link (URL)",
+                    "rules"  =>  "required"
+                )
+            );
+        }
+
+
+        //set and run the validation
+        $this->form_validation->set_rules($validation_config);
+        if ($this->form_validation->run() === TRUE) {
+            if ($this->input->post('study_meterial') == 'file') {
+                $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/uploads/courses_attachments/';
+                if (!file_exists($upload_dir)) {
+                    mkdir($upload_dir, 0777, true);  //create directory if not exist
+                }
+                $config = array(
+                    "upload_path" => $upload_dir,
+                    "allowed_types" => "jpg|jpeg|bmp|png|gif|pdf|doc|docx|ppt",
+                    "max_size" => 10000,
+                    "max_width" => 0,
+                    "max_height" => 0,
+                    "remove_spaces" => true,
+                    "encrypt_name" => true
+                );
+
+
+                $this->load->library("upload", $config);
+
+                if (!$this->upload->do_upload('document')) {
+                    $this->session->set_flashdata("msg_error", $this->upload->display_errors());
+                    redirect(ADMIN_DIR . "facilitator/training_batch_session/" . $training_batch_session_id);
+                    exit();
+                } else {
+
+                    $file_data = $this->upload->data();
+                }
+
+
+
+
+                $query = "SELECT * FROM training_batch_sessions 
+                      WHERE training_batch_session_id = $training_batch_session_id";
+                $training_batch_session = $this->db->query($query)->row();
+                $inputs = array();
+                $inputs["course_category"]  =  $training_batch_session->course_category;
+                $inputs["course_type"]  =  $training_batch_session->course_type;
+                $inputs["course"]  =  $training_batch_session->course_title;
+                $inputs["file_detail"]  =  $this->input->post('document_detail');
+                $inputs["folder"]  =  'courses_attachments';
+                $inputs["file_name"]  =  $file_data['file_name'];
+                $inputs["file_ext"]  = pathinfo($file_data['file_name'], PATHINFO_EXTENSION);
+                $inputs["created_by"]  = $user_id;
+
+                $this->db->insert('attachments', $inputs);
+                $attachment_id  = $this->db->insert_id();
+
+                $inputs = array();
+                $inputs['attachment_id'] = $attachment_id;
+                $inputs['training_batch_session_id'] = $training_batch_session_id;
+                $this->db->insert('training_batch_session_attachments', $inputs);
+                $this->session->set_flashdata("msg_success", 'File upload successfully.');
+            } else {
+                $inputs = array();
+                $inputs['attachment_id'] = NULL;
+                $inputs['url_link_detail'] = $this->input->post('url_link_detail');
+                $inputs['url_link'] = $this->input->post('url_link');
+                $inputs['attachment_id'] = NULL;
+                $inputs['training_batch_session_id'] = $training_batch_session_id;
+                $this->db->insert('training_batch_session_attachments', $inputs);
+                $this->session->set_flashdata("msg_success", 'Video link add successfully');
+            }
+
+
+            redirect(ADMIN_DIR . "facilitator/training_batch_session/" . $training_batch_session_id);
+        }
+
+        $this->data['training_batch_session_id'] = (int) $this->input->post('training_batch_session_id');
+        $this->data["title"] = 'Training Batch Session Detail';
+        $this->data["view"] = ADMIN_DIR . "facilitator/training_batch_session";
+        $this->load->view(ADMIN_DIR . "layout", $this->data);
+    }
+
+    public function remove_session_attachment($training_batch_session_id, $training_batch_session_attachment_id)
+    {
+        $training_batch_session_id = (int) $training_batch_session_id;
+        $training_batch_session_attachment_id = (int) $training_batch_session_attachment_id;
+        $this->db->where('training_batch_session_attachment_id', $training_batch_session_attachment_id);
+        $this->db->delete('training_batch_session_attachments');
+        $this->session->set_flashdata("msg_success", 'Attachment Remove Successfully.');
+        redirect(ADMIN_DIR . "facilitator/training_batch_session/" . $training_batch_session_id,);
+    }
+
+    public function get_mcq_add_form()
+    {
+        $this->data['training_batch_session_id'] = (int) $this->input->post('training_batch_session_id');
+        $this->data['training_id'] = (int) $this->input->post('training_id');
+        $this->data['batch_id'] = (int) $this->input->post('batch_id');
+        $this->data["title"] = 'Add New MCQ';
+        $this->load->view(ADMIN_DIR . "facilitator/mcq_add_form", $this->data);
+    }
+
+    // public function remove_session_attachment($training_batch_session_attachment_id)
+    // {
+    //     $training_batch_session_attachment_id = (int) $training_batch_session_attachment_id;
+    //     $query = "SELECT a.*,tbsa.training_batch_session_attachment_id FROM training_batch_session_attachments as tbsa
+    //                         INNER JOIN attachments as a ON(a.attachment_id = tbsa.attachment_id)
+    //                         WHERE tbsa.training_batch_session_attachment_id = $training_batch_session_attachment_id";
+    //     $session_attachment = $this->db->query($query)->row();
+
+    //     $file_path = FCPATH . 'uploads/' . $session_attachment->folder . '/' . $session_attachment->file_name;
+
+    //     if (file_exists($file_path)) {
+    //         unlink($file_path);
+    //         echo "File deleted successfully.";
+    //     } else {
+    //         echo "File not found or already deleted.";
+    //     }
+    // }
 
     /**
      * get a list of all items that are not trashed
