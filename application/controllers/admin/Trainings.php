@@ -746,7 +746,7 @@ class Trainings extends Admin_Controller
             $this->db->update('training_nominations', $input);
         }
         $this->session->set_flashdata("msg_success", 'Record add successfully.');
-        redirect(ADMIN_DIR . "trainings/training_batch/" . $training_id . "/" . $batch_id);
+        redirect(ADMIN_DIR . "trainings/training_batch/" . $training_id . "/" . $batch_id . "?tab=trainees");
     }
     public function remove_nonimation_from_batch($training_id, $batch_id, $nonimation_id)
     {
@@ -760,7 +760,7 @@ class Trainings extends Admin_Controller
         $this->db->where($where);
         $this->db->update('training_nominations', $input);
         $this->session->set_flashdata("msg_success", 'Record add successfully.');
-        redirect(ADMIN_DIR . "trainings/training_batch/" . $training_id . "/" . $batch_id);
+        redirect(ADMIN_DIR . "trainings/training_batch/" . $training_id . "/" . $batch_id . "?tab=trainees");
     }
 
     public function remove_batch($training_id, $batch_id)
@@ -888,5 +888,86 @@ class Trainings extends Admin_Controller
         $this->db->delete('training_batch_sessions');
         $this->session->set_flashdata("msg_success", 'Session Removed.');
         redirect(ADMIN_DIR . "trainings/training_batch/" . $training_id . "/" . $batch_id);
+    }
+
+    public function get_mcq_add_form()
+    {
+        $this->data['training_batch_session_id'] = (int) $this->input->post('training_batch_session_id');
+        $this->data['training_id'] = (int) $this->input->post('training_id');
+        $this->data['batch_id'] = (int) $this->input->post('batch_id');
+        $this->data["title"] = 'Add New MCQ';
+        $this->load->view(ADMIN_DIR . "trainings/mcq_add_form", $this->data);
+    }
+
+    public function add_mcsq()
+    {
+
+        $training_batch_session_id = $this->input->post('training_batch_session_id');
+
+        $this->load->library('form_validation');
+        $this->form_validation->set_rules('question', 'Question', 'required');
+        $this->form_validation->set_rules('a', 'Option A', 'required');
+        $this->form_validation->set_rules('b', 'Option B', 'required');
+        if ($this->input->post('correct_answer') == 'c') {
+            $this->form_validation->set_rules('c', 'Option C', 'required');
+        }
+        if ($this->input->post('correct_answer') == 'd') {
+            $this->form_validation->set_rules('d', 'Option D', 'required');
+        }
+        $this->form_validation->set_rules('correct_answer', 'Correct Answer', 'required');
+
+        if ($this->form_validation->run() == false) {
+            $data['error'] = validation_errors();
+        } else {
+
+
+            $inputs = array(
+                'created_by' => $this->session->userdata('userId'),
+                'question' => $this->input->post('question'),
+                'a' => $this->input->post('a'),
+                'b' => $this->input->post('b'),
+                'c' => $this->input->post('c'),
+                'd' => $this->input->post('d'),
+                'answer' => $this->input->post('correct_answer')
+            );
+
+            $inputs["answer"]  =   $this->input->post($this->input->post('correct_answer'));
+
+            // $query = "SELECT * FROM training_batch_sessions 
+            // WHERE training_batch_session_id = $training_batch_session_id";
+            // $training_batch_session = $this->db->query($query)->row();
+
+            // $inputs["category"]  =  $training_batch_session->course_category;
+            // $inputs["type"]  =  $training_batch_session->course_type;
+            // $inputs["course"]  =  $training_batch_session->course_title;
+
+            $inputs["category"]  =  '';
+            $inputs["type"]  =  '';
+            $inputs["course"]  =  '';
+
+            $this->db->insert('mcqs', $inputs);
+            $mcq_id  = $this->db->insert_id();
+
+            $inputs = array();
+            $inputs['mcq_id'] = $mcq_id;
+            $inputs['training_id'] = $this->input->post('training_id');
+            $this->db->insert('training_mcqs', $inputs);
+            //$this->session->set_flashdata("msg_success", 'MCQ add successfully');
+            $data['success'] = true;
+        }
+
+        echo json_encode($data);
+    }
+
+    public function remove_traning_mcq($training_id, $training_mcq_id)
+    {
+        $training_id = (int)  $training_id;
+        $training_mcq_id = (int) $training_mcq_id;
+        $where['training_id'] = $training_id;
+        $where['training_mcq_id'] = $training_mcq_id;
+        $this->db->where($where);
+        $this->db->delete('training_mcqs');
+        $this->session->set_flashdata("msg_success", 'Record remove successfully.');
+        redirect(ADMIN_DIR . "trainings/view_training/" . $training_id . "?tab=test");
     }
 }

@@ -51,18 +51,100 @@
             <div class="box-body">
                 <div class="tabbable header-tabs">
                     <ul class="nav nav-tabs">
+                        <li <?php if ($this->input->get('tab') == 'test') { ?>class="active" <?php } ?>>
+                            <a href="<?php echo site_url(ADMIN_DIR . "trainings/view_training/" . $training->training_id) . "?tab=test" ?>"><i class="fa fa-question" aria-hidden="true"></i>
+                                <span class="hidden-inline-mobile">Pre and Post Test</span></a>
+                        </li>
                         <li <?php if ($this->input->get('tab') == 'nomination') { ?>class="active" <?php } ?>>
-                            <a href="#box_tab2" data-toggle="tab">
+                            <a href="<?php echo site_url(ADMIN_DIR . "trainings/view_training/" . $training->training_id) . "?tab=nomination" ?>">
                                 <i class="fa fa-users"></i>
                                 <span class="hidden-inline-mobile">Nominations</span></a>
                         </li>
-                        <li <?php if ($this->input->get('tab') != 'nomination') { ?>class="active" <?php } ?>>
-                            <a href="#box_tab1" data-toggle="tab"><i class="fa fa-tasks" aria-hidden="true"></i>
+                        <li <?php if ($this->input->get('tab') == 'training') { ?>class="active" <?php } ?>>
+                            <a href="<?php echo site_url(ADMIN_DIR . "trainings/view_training/" . $training->training_id) . "?tab=training" ?>"><i class="fa fa-tasks" aria-hidden="true"></i>
                                 <span class="hidden-inline-mobile">Training Batches</span></a>
                         </li>
+
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane fade in <?php if ($this->input->get('tab') != 'nomination') { ?> in active <?php } ?>" id="box_tab1">
+                        <div class="tab-pane fade in <?php if ($this->input->get('tab') == 'test') { ?> in active <?php } ?>" id="box_tab3">
+                            <!-- TAB 1 -->
+                            <div class="row">
+                                <div class="col-md-12">
+
+
+                                    <div class="table-responsive">
+
+                                        <table class="table">
+                                            <tr>
+                                                <th></th>
+                                                <th>#</th>
+                                                <th>Question</th>
+                                                <th>Option A</th>
+                                                <th>Option B</th>
+                                                <th>Option C</th>
+                                                <th>Option D</th>
+                                                <th>Answer</th>
+                                            </tr>
+                                            <?php
+                                            $query = "SELECT mcqs.*, t_mcqs.training_mcq_id FROM training_mcqs as t_mcqs
+                                            INNER JOIN mcqs ON(mcqs.mcq_id = t_mcqs.mcq_id)
+                                            WHERE t_mcqs.training_id = $training->training_id";
+                                            $s_mcqs = $this->db->query($query)->result();
+                                            $count = 1;
+                                            foreach ($s_mcqs as $s_mcq) { ?>
+                                                <tr>
+                                                    <td>
+                                                        <a href="<?php echo site_url(ADMIN_DIR . "trainings/remove_traning_mcq/" . $training->training_id . "/" . $s_mcq->training_mcq_id); ?>" onclick="return confirm('Are you sure? you want to remove')"><i class="fa fa-times" aria-hidden="true"></i></a>
+
+                                                    </td>
+                                                    <td><?php echo $count++; ?></td>
+                                                    <td style="width: 50%;"><?php echo $s_mcq->question; ?></td>
+                                                    <td><?php echo $s_mcq->a; ?></td>
+                                                    <td><?php echo $s_mcq->b; ?></td>
+                                                    <td><?php echo $s_mcq->c; ?></td>
+                                                    <td><?php echo $s_mcq->d; ?></td>
+                                                    <td style="cursor: pointer;">
+
+                                                        <span onclick="$('#answer_<?php echo $s_mcq->training_mcq_id ?>').show();$('#blank_<?php echo $s_mcq->training_mcq_id ?>').hide();" id="blank_<?php echo $s_mcq->training_mcq_id ?>">****</span>
+                                                        <span onclick="$('#blank_<?php echo $s_mcq->training_mcq_id ?>').show();$('#answer_<?php echo $s_mcq->training_mcq_id ?>').hide();" style="display: none;" id="answer_<?php echo $s_mcq->training_mcq_id ?>">
+                                                            <?php echo $s_mcq->answer; ?>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            <?php } ?>
+                                        </table>
+                                        <div style="text-align: center;">
+                                            <button class="btn btn-primary btn-sm" onclick="get_mcq_add_form()">Add MCQ</button>
+                                        </div>
+                                        <script>
+                                            function get_mcq_add_form(nomination_type) {
+                                                $('#modal').html('Please Wait .....');
+                                                $.ajax({
+                                                    type: "POST",
+                                                    url: "<?php echo site_url(ADMIN_DIR . "/trainings/get_mcq_add_form"); ?>",
+                                                    data: {
+                                                        training_id: '<?php echo $training->training_id; ?>'
+                                                    }
+                                                }).done(function(data) {
+                                                    $('#g_modal_body').html(data);
+                                                });
+
+                                                $('#g_modal').modal('show');
+                                            }
+                                        </script>
+
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+                            <hr class="margin-bottom-0">
+                            <!-- /TAB 1 -->
+                        </div>
+
+                        <div class="tab-pane fade in <?php if ($this->input->get('tab') == 'training') { ?> in active <?php } ?>" id="box_tab1">
                             <!-- TAB 1 -->
                             <div class="row">
                                 <div class="col-md-4">
@@ -215,7 +297,7 @@
                                                                     <?php if ($batch->status == 1) { ?>
                                                                         <button style="padding: 1px;" onclick="get_batch_edit_form(<?php echo $batch->batch_id; ?>)" class="btn btn-link btn-sm">Edit</button>
                                                                         <span style="margin: 2px;"></span>
-                                                                        <a style="padding: 1px;" href="<?php echo site_url(ADMIN_DIR . "trainings/training_batch/" . $training->training_id . "/" . $batch->batch_id); ?>" class="btn btn-link btn-sm">Manage</a>
+                                                                        <a style="padding: 1px;" href="<?php echo site_url(ADMIN_DIR . "trainings/training_batch/" . $training->training_id . "/" . $batch->batch_id); ?>?tab=session" class="btn btn-link btn-sm">Manage</a>
                                                                     <?php } ?>
                                                                 </td>
                                                             </tr>

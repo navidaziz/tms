@@ -175,8 +175,23 @@
                             </td>
                         </tr>
                     </table>
+
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="table-responsive">
+
+            <div class="box border blue" id="messenger">
+
+                <div class="box-body">
                     <div>
                         <div>
+                            <h4>Study Materials </h4>
                             <ul class="list-group">
                                 <?php
                                 $query = "SELECT a.*,tbsa.training_batch_session_attachment_id FROM training_batch_session_attachments as tbsa
@@ -220,7 +235,7 @@
                                             <a style="color: white;" href="<?php echo $session_attachment->url_link; ?>" target="_blank">
                                                 <i class="fa fa-play" aria-hidden="true"></i>
                                                 <small>
-                                                    View
+                                                    Play
                                                 </small>
                                             </a>
                                         </span>
@@ -228,95 +243,64 @@
                                 <?php   }  ?>
                             </ul>
                         </div>
-                        <form action="<?php echo site_url(ADMIN_DIR . "facilitator/upload_session_file"); ?>" id="batch_add_form" method="post" enctype="multipart/form-data" style="font-size: 11px !important;">
-                            <strong>Upload Course Study Meterials</strong><br />
-                            Study Meterial <input required onclick="$('.file').show();$('.link').hide();" type="radio" name="study_meterial" value="file" /> Audio / Doc
-                            <span style="margin-left: 5px;"></span>
-                            <input required onclick="$('.file').hide();$('.link').show();" type="radio" name="study_meterial" value="youtube" /> Youtube Video
-                            <br />
-                            <br />
-                            <input name="training_batch_session_id" type="hidden" value="<?php echo $training_batch_session_id; ?>" />
-                            <input name="training_id" type="hidden" value="<?php echo $training->training_id; ?>" />
-                            <input name="batch_id" type="hidden" value="<?php echo $batch->batch_id; ?>" />
-                            <div class="form-group row file">
+                        <hr />
+                        <div style="border-radius: 5px; border:1px solid gray; padding:5px">
+                            <form action="<?php echo site_url(ADMIN_DIR . "facilitator/upload_session_file"); ?>" id="batch_add_form" method="post" enctype="multipart/form-data" style="font-size: 11px !important;">
+                                <strong>Upload Course Study Meterials</strong><br />
+                                Study Meterial <input required onclick="$('.file').show();$('.link').hide();" type="radio" name="study_meterial" value="file" /> Audio / Doc
+                                <span style="margin-left: 5px;"></span>
+                                <input required onclick="$('.file').hide();$('.link').show();" type="radio" name="study_meterial" value="youtube" /> Youtube Video
+                                <br />
+                                <br />
+                                <input name="training_batch_session_id" type="hidden" value="<?php echo $training_batch_session_id; ?>" />
+                                <input name="training_id" type="hidden" value="<?php echo $training->training_id; ?>" />
+                                <input name="batch_id" type="hidden" value="<?php echo $batch->batch_id; ?>" />
+                                <div class="form-group row file">
 
-                                <div class="col-sm-12">
-                                    <label for="document_detail" class="col-form-label">Document Detail</label>
-                                    <input type="text" class="form-control" id="document_detail" name="document_detail" placeholder="Write About Document">
-                                    <?php echo form_error("document_detail", "<p class=\"text-danger\">", "</p>"); ?>
+                                    <div class="col-sm-12">
+                                        <label for="document_detail" class="col-form-label">Document Detail</label>
+                                        <input type="text" class="form-control" id="document_detail" name="document_detail" placeholder="Write About Document">
+                                        <?php echo form_error("document_detail", "<p class=\"text-danger\">", "</p>"); ?>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group row file">
+                                <div class="form-group row file">
 
-                                <div class="col-sm-12">
-                                    <label for="document" class="col-form-label">Document (File)</label>
-                                    <input type="file" class="form-control" id="document" name="document">
-                                    <?php echo form_error("document", "<p class=\"text-danger\">", "</p>"); ?>
+                                    <div class="col-sm-12">
+                                        <label for="document" class="col-form-label">Document (File)</label>
+                                        <input type="file" class="form-control" id="document" name="document">
+                                        <?php echo form_error("document", "<p class=\"text-danger\">", "</p>"); ?>
+                                    </div>
                                 </div>
-                            </div>
 
 
-                            <div class="form-group row link" style="display: none;">
-                                <div class="col-sm-12">
-                                    <label for="url_link_detail" class="col-form-label">YouTube Video Detail</label>
-                                    <input type="text" class="form-control" id="url_link_detail" name="url_link_detail">
-                                    <?php echo form_error("url_link", "<p class=\"text-danger\">", "</p>"); ?>
+                                <div class="form-group row link" style="display: none;">
+                                    <div class="col-sm-12">
+                                        <label for="url_link_detail" class="col-form-label">YouTube Video Detail</label>
+                                        <input type="text" class="form-control" id="url_link_detail" name="url_link_detail">
+                                        <?php echo form_error("url_link", "<p class=\"text-danger\">", "</p>"); ?>
+                                    </div>
                                 </div>
-                            </div>
 
 
-                            <div class="form-group row link" style="display: none;">
+                                <div class="form-group row link" style="display: none;">
 
-                                <div class="col-sm-12">
-                                    <label for="url_link" class="col-form-label">YouTube Video Link (URL)</label>
-                                    <input type="url" class="form-control" id="url_link" name="url_link">
-                                    <?php echo form_error("url_link", "<p class=\"text-danger\">", "</p>"); ?>
+                                    <div class="col-sm-12">
+                                        <label for="url_link" class="col-form-label">YouTube Video Link (URL)</label>
+                                        <input type="url" class="form-control" id="url_link" name="url_link">
+                                        <?php echo form_error("url_link", "<p class=\"text-danger\">", "</p>"); ?>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div style="text-align: center;">
-                                <button class="btn btn-success btn-sm"><i class="fa fa-upload" aria-hidden="true"></i> Upload File</button>
-                            </div>
-                        </form>
-
+                                <div style="text-align: center;">
+                                    <button class="btn btn-success btn-sm"><i class="fa fa-upload" aria-hidden="true"></i> Upload File</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
 
-
-                </div>
-
-
-            </div>
-        </div>
-    </div>
-    <div class="col-md-8">
-        <div class="table-responsive">
-
-            <div class="box border blue" id="messenger">
-
-                <div class="box-body">
-                    <button onclick="get_mcq_add_form()">Add MCQ</button>
 
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    function get_mcq_add_form(nomination_type) {
-        $('#modal').html('Please Wait .....');
-        $.ajax({
-            type: "POST",
-            url: "<?php echo site_url(ADMIN_DIR . "/facilitator/get_mcq_add_form"); ?>",
-            data: {
-                training_batch_session_id: <?php echo $training_batch_session_id; ?>,
-                training_id: '<?php echo $training->training_id; ?>',
-                batch_id: <?php echo $batch->batch_id; ?>
-            }
-        }).done(function(data) {
-            $('#g_modal_body').html(data);
-        });
-
-        $('#g_modal').modal('show');
-    }
-</script>

@@ -49,9 +49,9 @@ class Module_m extends MY_Model
         $this->db->select("module_id, module_title, module_uri");
         $this->db->from($this->table);
         if ($controller_id == 0) {
-            $this->db->where("module_type = 'controller' and " . $this->status . " != 0");
+            $this->db->where("module_type = 'controller' and " . $this->status . " = 1");
         } else {
-            $this->db->where("module_type = 'controller' and " . $this->status . " != 0 and module_id = " . $controller_id);
+            $this->db->where("module_type = 'controller' and " . $this->status . " = 1 and module_id = " . $controller_id);
         }
         $query = $this->db->get();
         $controllers = $query->result();

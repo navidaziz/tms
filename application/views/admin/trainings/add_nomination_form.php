@@ -168,11 +168,13 @@
                     //location.reload();
                     if (jsonData.user_id) {
                         $('#message_form').html('<div class="text-success">Record Add Successfully.</div>');
-                        location.reload();
+                        window.location.href = '?tab=nomination';
+                        //location.reload();
                     }
                     if (jsonData.update) {
                         $('#message_form').html('<div class="text-success">Record Update Successfully.</div>');
-                        location.reload();
+                        window.location.href = '?tab=nomination';
+                        //location.reload(); 
                     }
 
                 },

@@ -179,14 +179,7 @@ class Facilitator extends Admin_Controller
         redirect(ADMIN_DIR . "facilitator/training_batch_session/" . $training_batch_session_id,);
     }
 
-    public function get_mcq_add_form()
-    {
-        $this->data['training_batch_session_id'] = (int) $this->input->post('training_batch_session_id');
-        $this->data['training_id'] = (int) $this->input->post('training_id');
-        $this->data['batch_id'] = (int) $this->input->post('batch_id');
-        $this->data["title"] = 'Add New MCQ';
-        $this->load->view(ADMIN_DIR . "facilitator/mcq_add_form", $this->data);
-    }
+
 
     // public function remove_session_attachment($training_batch_session_attachment_id)
     // {

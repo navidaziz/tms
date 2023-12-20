@@ -102,7 +102,7 @@
                                     <td>
                                         <a class="llink llink-edit" href="<?php echo site_url(ADMIN_DIR . "trainings/edit/" . $training->training_id . "/" . $this->uri->segment(4)); ?>"><i class="fa fa-pencil-square-o"></i> Edit</a>
                                         <span style="margin-left: 5px;"></span>
-                                        <a class="llink llink-view" href="<?php echo site_url(ADMIN_DIR . "trainings/view_training/" . $training->training_id . "/" . $this->uri->segment(4)); ?>"><i class="fa fa-eye"></i> Manage</a>
+                                        <a class="llink llink-view" href="<?php echo site_url(ADMIN_DIR . "trainings/view_training/" . $training->training_id . "/" . $this->uri->segment(4) . "?tab=training"); ?>"><i class="fa fa-eye"></i> Manage</a>
 
 
                                     </td>
