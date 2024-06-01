@@ -10,7 +10,7 @@ class Trainings extends Admin_Controller
     {
 
         parent::__construct();
-        $this->load->model("admin/Training_model");
+        $this->load->model("admin/training_model");
         $this->lang->load("trainings", 'english');
         $this->lang->load("system", 'english');
         //$this->output->enable_profiler(TRUE);
