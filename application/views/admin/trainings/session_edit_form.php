@@ -5,6 +5,9 @@
     </button>
 </div>
 <div class="modal-body">
+    <h4>
+        Session for : <?php echo date('D d F, Y', strtotime($batch_day)); ?>
+    </h4>
     <form id="update_batch_session" method="post">
         <input name="training_id" type="hidden" value="<?php echo $training_id ?>" />
         <input name="batch_id" type="hidden" value="<?php echo $batch_id ?>" />
@@ -57,6 +60,7 @@
                  FROM training_nominations
                  INNER JOIN users ON(users.user_id = training_nominations.user_id)
                  WHERE  training_nominations.nomination_type='Facilitator'
+                 AND training_nominations.batch_id = $batch_id
                  AND training_nominations.training_id = " . $training_id;
                     $facilitators = $this->db->query($query)->result();
                     ?>

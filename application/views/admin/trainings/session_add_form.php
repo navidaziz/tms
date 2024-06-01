@@ -5,6 +5,9 @@
     </button>
 </div>
 <div class="modal-body">
+    <h4>
+        Session for : <?php echo date('D d F, Y', strtotime($batch_day)); ?>
+    </h4>
     <form id="batch_session_add_form" method="post">
         <input name="training_id" type="hidden" value="<?php echo $training_id ?>" />
         <input name="batch_id" type="hidden" value="<?php echo $batch_id ?>" />
@@ -50,13 +53,14 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label for="facilitotor_id" class="col-sm-4 col-form-label">Facilitator</label>
+                <label for="facilitotor_id" class="col-sm-4 col-form-label">Facilitators</label>
                 <div class="col-sm-8">
                     <?php
                     $query = "SELECT users.*, training_nominations.nomination_type
                  FROM training_nominations
                  INNER JOIN users ON(users.user_id = training_nominations.user_id)
                  WHERE  training_nominations.nomination_type='Facilitator'
+                 AND training_nominations.batch_id = $batch_id
                  AND training_nominations.training_id = " . $training_id;
                     $facilitators = $this->db->query($query)->result();
                     ?>
@@ -100,7 +104,8 @@
                     }
                     if (jsonData.success) {
                         $('#message_form').html('<div class="text-success">Record Update Successfully.</div>');
-                        location.reload();
+                        //location.reload();
+                        window.location.href = '?tab=session';
                     }
 
                 },

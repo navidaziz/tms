@@ -85,6 +85,7 @@ class User_model extends MY_Model
         $inputs = array();
 
         $inputs["role_id"]  =  $this->input->post("role_id");
+        $inputs["department_id"]  =  $this->input->post("department_id");
 
         $inputs["user_title"]  =  $this->input->post("user_title");
 
@@ -112,6 +113,7 @@ class User_model extends MY_Model
         $inputs = array();
 
         $inputs["role_id"]  =  $this->input->post("role_id");
+        $inputs["department_id"]  =  $this->input->post("department_id");
 
         $inputs["user_title"]  =  $this->input->post("user_title");
 

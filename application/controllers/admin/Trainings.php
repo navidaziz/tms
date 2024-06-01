@@ -10,7 +10,7 @@ class Trainings extends Admin_Controller
     {
 
         parent::__construct();
-        $this->load->model("admin/training_model");
+        $this->load->model("admin/Training_model");
         $this->lang->load("trainings", 'english');
         $this->lang->load("system", 'english');
         //$this->output->enable_profiler(TRUE);
@@ -35,8 +35,17 @@ class Trainings extends Admin_Controller
      */
     public function view()
     {
-
-        $where = "`trainings`.`status` IN (0, 1) ";
+        $user_id = $this->session->userdata('userId');
+        $query = "SELECT users.user_id, 
+                departments.department_name,
+                departments.department_id
+                FROM users 
+                INNER JOIN departments ON(departments.department_id = users.department_id)
+                WHERE users.user_id = $user_id
+                AND role_id = 5";
+        $department = $this->db->query($query)->row();
+        $this->data['department_name'] = $department->department_name;
+        $where = "`trainings`.`status` IN (0, 1) and department_id = '" . $department->department_id . "'";
         $data = $this->training_model->get_training_list($where);
         $this->data["trainings"] = $data->trainings;
         $this->data["pagination"] = $data->pagination;
@@ -121,6 +130,40 @@ class Trainings extends Admin_Controller
         $this->session->set_flashdata("msg_success", $this->lang->line("draft_msg_success"));
         redirect(ADMIN_DIR . "trainings/view/" . $page_id);
     }
+
+    public function inactive($training_id, $page_id = NULL)
+    {
+
+        $training_id = (int) $training_id;
+        $query = "UPDATE trainings SET training_status = 0 WHERE training_id = '" . $training_id . "'";
+        $this->db->query($query);
+
+        $this->session->set_flashdata("msg_success", "Status Change to In Active");
+        redirect(ADMIN_DIR . "trainings/view/" . $page_id);
+    }
+
+    public function active($training_id, $page_id = NULL)
+    {
+
+        $training_id = (int) $training_id;
+        $query = "UPDATE trainings SET training_status = 1 WHERE training_id = '" . $training_id . "'";
+        $this->db->query($query);
+
+        $this->session->set_flashdata("msg_success", "Status Change to Active");
+        redirect(ADMIN_DIR . "trainings/view/" . $page_id);
+    }
+
+    public function complete($training_id, $page_id = NULL)
+    {
+
+        $training_id = (int) $training_id;
+        $query = "UPDATE trainings SET training_status = 2 WHERE training_id = '" . $training_id . "'";
+        $this->db->query($query);
+
+        $this->session->set_flashdata("msg_success", "Marked as Completed");
+        redirect(ADMIN_DIR . "trainings/view/" . $page_id);
+    }
+
     //---------------------------------------------------------------------------
 
     /**
@@ -147,9 +190,9 @@ class Trainings extends Admin_Controller
     {
 
         $training_id = (int) $training_id;
-        //$this->training_model->changeStatus($training_id, "3");
+        $this->training_model->changeStatus($training_id, "3");
 
-        $this->training_model->delete(array('training_id' => $training_id));
+        //$this->training_model->delete(array('training_id' => $training_id));
         $this->session->set_flashdata("msg_success", $this->lang->line("delete_msg_success"));
         redirect(ADMIN_DIR . "trainings/trashed/" . $page_id);
     }
@@ -577,10 +620,20 @@ class Trainings extends Admin_Controller
 
     public function training_batch($training_id, $batch_id)
     {
+
+        $tab = '';
+        if ($this->input->get('tab')) {
+            $tab = $this->input->get('tab');
+        } else {
+            $tab = 'session';
+        }
+        $this->data['tab'] = $tab;
         $training_id = (int) $training_id;
+        $this->data['training_id'] = $training_id;
         $this->data["training"] = $training = $this->training_model->get($training_id);
 
         $batch_id = (int) $batch_id;
+        $this->data['batch_id'] = $batch_id;
         $query = "SELECT * FROM training_batches 
         WHERE training_id = $training_id 
         AND batch_id = $batch_id";
@@ -608,7 +661,7 @@ class Trainings extends Admin_Controller
         $this->data['training_id'] = $training_id =   (int) $this->input->post('training_id');
         $this->data['batch_id'] = $batch_id =  (int) $this->input->post('batch_id');
         $this->data['training_batch_session_id'] = $training_batch_session_id =  (int) $this->input->post('training_batch_session_id');
-
+        $this->data['batch_day'] =  $this->input->post('batch_day');
         $where = array();
         $where['training_id'] = $training_id;
         $where['batch_id'] = $batch_id;
@@ -628,8 +681,24 @@ class Trainings extends Admin_Controller
         $this->data['training_id'] = $training_id =  (int) $this->input->post('training_id');
         $this->data['batch_id'] = $batch_id = (int) $this->input->post('batch_id');
         $this->data['nomination_type'] = $nomination_type =  $this->input->post('nomination_type');
-        $this->data['title'] = "Add $nomination_type's ";
-        $this->load->view(ADMIN_DIR . "trainings/nomination_list", $this->data);
+        $training_id = (int) $training_id;
+        $this->data['training_id'] = $training_id;
+        $this->data["training"] = $training = $this->training_model->get($training_id);
+
+        $batch_id = (int) $batch_id;
+        $this->data['batch_id'] = $batch_id;
+        $query = "SELECT * FROM training_batches 
+        WHERE training_id = $training_id 
+        AND batch_id = $batch_id";
+        $this->data['batch'] = $batch = $this->db->query($query)->row();
+        if ($nomination_type == 'Trainee') {
+            $this->data['title'] = "Add $nomination_type's ";
+            $this->load->view(ADMIN_DIR . "trainings/nomination_list", $this->data);
+        }
+        if ($nomination_type == 'Facilitators') {
+            $this->data['title'] = "Add $nomination_type";
+            $this->load->view(ADMIN_DIR . "trainings/facilitators_list", $this->data);
+        }
     }
 
 
@@ -748,7 +817,36 @@ class Trainings extends Admin_Controller
         $this->session->set_flashdata("msg_success", 'Record add successfully.');
         redirect(ADMIN_DIR . "trainings/training_batch/" . $training_id . "/" . $batch_id . "?tab=trainees");
     }
-    public function remove_nonimation_from_batch($training_id, $batch_id, $nonimation_id)
+
+    public function add_facilitators_to_batch()
+    {
+
+        $training_id =  (int) $this->input->post('training_id');
+        $batch_id = (int) $this->input->post('batch_id');
+        $facilitators = $this->input->post('nominations');
+
+        foreach ($facilitators as $user_id => $facilitator) {
+
+            $where['user_id'] = $user_id;
+            $where['training_id'] = $training_id;
+            $where['batch_id'] = $batch_id;
+            $where['nomination_type'] = 'Facilitator';
+            $this->db->where($where);
+            $this->db->delete('training_nominations');
+
+            $input['training_id'] = $training_id;
+            $input['batch_id'] = $batch_id;
+            $input['nomination_type'] = 'Facilitator';
+            $input['user_id'] = $user_id;
+            $this->db->insert('training_nominations', $input);
+            $training_nomination_id = $this->db->insert_id();
+        }
+
+        $this->session->set_flashdata("msg_success", 'Record add successfully.');
+        redirect(ADMIN_DIR . "trainings/training_batch/" . $training_id . "/" . $batch_id . "?tab=facilitators");
+    }
+
+    public function remove_nonimation_from_batch($training_id, $batch_id, $nonimation_id, $nomination_type = 'trainees')
     {
         $training_id = (int)  $training_id;
         $batch_id = (int) $batch_id;
@@ -760,7 +858,7 @@ class Trainings extends Admin_Controller
         $this->db->where($where);
         $this->db->update('training_nominations', $input);
         $this->session->set_flashdata("msg_success", 'Record add successfully.');
-        redirect(ADMIN_DIR . "trainings/training_batch/" . $training_id . "/" . $batch_id . "?tab=trainees");
+        redirect(ADMIN_DIR . "trainings/training_batch/" . $training_id . "/" . $batch_id . "?tab=" . $nomination_type);
     }
 
     public function remove_batch($training_id, $batch_id)

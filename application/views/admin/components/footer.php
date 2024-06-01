@@ -5,9 +5,13 @@
 </div>
 </section>
 
-
+<style>
+	.dt-buttons {
+		display: inline;
+	}
+</style>
 <div class="modal" id="g_modal" tabindex="-1" role="dialog">
-	<div class="modal-dialog" role="document">
+	<div class="modal-dialog" role="document" style="width: 70%;">
 		<div class="modal-content" id="g_modal_body">
 
 			<div class="modal-footer">

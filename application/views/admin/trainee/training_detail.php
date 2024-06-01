@@ -22,7 +22,7 @@
 
                 <div class="col-md-12">
                     <div class="clearfix">
-                        <h3 class="content-t itle pull-left">
+                        <h3 class="content-ti tle">
                             <?php
                             $query = "SELECT trainings.*
                             FROM `training_nominations`
@@ -31,23 +31,31 @@
                             AND training_nominations.user_id = '" . $this->session->userdata('userId') . "'";
                             $training = $this->db->query($query)->row();
                             ?>
-                            <h4>#<?php echo $training->code; ?>: <?php echo $training->title ?></h4>
-                            <smal> <?php echo $training->level; ?> /
-                                <?php echo $training->category; ?> /
-                                <?php echo $training->sub_category; ?> /
-                                <?php echo $training->type; ?> /
-                                <?php echo $training->training_for; ?>
-                                <br />
-                                <strong>
-                                    <i class="fa fa-map-marker" aria-hidden="true"></i>
-                                    Location: <?php echo $training->location; ?>
-                                    <span style="margin-left: 10px;"></span>
-                                    <i class="fa fa-clock-o" aria-hidden="true"></i>
-                                    From <?php echo date('D, j M Y', strtotime($training->start_date)); ?>
-                                    To <?php echo date('D, j M Y', strtotime($training->end_date)); ?>
-                                </strong>
-                            </smal>
+                            <?php echo $training->title ?>
+
                         </h3>
+                        <?php
+                        $query = "SELECT training_batches.*
+                                FROM `training_nominations`
+                                INNER JOIN training_batches ON(training_batches.batch_id = training_nominations.batch_id)
+                                WHERE training_nominations.batch_id = '" . $batch_id . "'
+                                AND training_nominations.training_id = '" . $training->training_id . "'
+                                AND training_nominations.user_id = '" . $this->session->userdata('userId') . "'";
+                        $batch = $this->db->query($query)->row();
+                        ?>
+                        <h4>T-Code: <?php echo $training->code; ?> : <?php echo $batch->batch_title; ?></h4>
+                        <small>
+                            <i class="fa fa-map-marker" aria-hidden="true"></i>
+
+                            Venue: <?php echo $batch->location; ?>
+                            <span style="margin-left: 10px;"></span>
+                            <i class="fa fa-clock-o" aria-hidden="true"></i>
+                            From
+                            <b><?php echo date('D j M Y', strtotime($batch->batch_start_date)); ?></b>
+                            To <b><?php echo date('D j M Y', strtotime($batch->batch_end_date)); ?></b>
+
+
+                        </small>
 
                     </div>
                 </div>
@@ -74,30 +82,6 @@
                 <div class="box-body">
 
 
-                    <?php
-                    $query = "SELECT training_batches.*
-                                FROM `training_nominations`
-                                INNER JOIN training_batches ON(training_batches.batch_id = training_nominations.batch_id)
-                                WHERE training_nominations.batch_id = '" . $batch_id . "'
-                                AND training_nominations.training_id = '" . $training->training_id . "'
-                                AND training_nominations.user_id = '" . $this->session->userdata('userId') . "'";
-                    $batch = $this->db->query($query)->row();
-                    ?>
-                    <h4><?php echo $batch->batch_title; ?></h4>
-                    <small>
-                        <i class="fa fa-map-marker" aria-hidden="true"></i>
-
-                        Venue: <?php echo $batch->location; ?>
-                        <br />
-                        <i class="fa fa-clock-o" aria-hidden="true"></i>
-                        From
-                        <b><?php echo date('D j M Y', strtotime($batch->batch_start_date)); ?></b>
-                        To <b><?php echo date('D j M Y', strtotime($batch->batch_end_date)); ?></b>
-                        <br />
-
-
-                    </small>
-                    <hr />
                     <div style="text-align: center;">
                         <a class="btn btn-danger btn-sm" style="width: 50%;" href="<?php echo site_url(ADMIN_DIR . "trainee/pre_test/" . $training_id . "/" . $batch_id) ?>"> <i class="fa fa-check-square-o" aria-hidden="true"></i> Pre Test Assessment</a>
                     </div>
@@ -126,7 +110,10 @@
                             <td><?php echo $summary->total; ?></td>
                             <td><?php echo $summary->wrong_ans; ?></td>
                             <td><?php echo $summary->correct_ans; ?></td>
-                            <td><?php echo round(($summary->correct_ans * 100) / $summary->total, 2) . " %"; ?></td>
+                            <td><?php
+                                if ($summary->total) {
+                                    echo round(($summary->correct_ans * 100) / $summary->total, 2) . " %";
+                                } ?></td>
                         </tr>
                     </table>
                     <div style="text-align: center;">
@@ -157,7 +144,11 @@
                             <td><?php echo $summary->total; ?></td>
                             <td><?php echo $summary->wrong_ans; ?></td>
                             <td><?php echo $summary->correct_ans; ?></td>
-                            <td><?php echo round(($summary->correct_ans * 100) / $summary->total, 2) . " %"; ?></td>
+                            <td><?php
+                                if ($summary->total) {
+                                    echo round(($summary->correct_ans * 100) / $summary->total, 2) . " %";
+                                }
+                                ?></td>
                         </tr>
                     </table>
                 </div>
@@ -177,25 +168,29 @@
                         $startDate = new DateTime($batch->batch_start_date);
                         $endDate = new DateTime($batch->batch_end_date);
 
-                        $currentDate = clone $startDate;
+                        $session_start_date = clone $startDate;
                         $count = 1;
-                        while ($currentDate <= $endDate) {
-                            $currentDate->modify('+1 day');
+                        while ($session_start_date <= $endDate) {
+
                         ?>
                             <table style=" width: 100%; border-collapse: separate; border-spacing: 2px; margin-bottom:10px; border:1px solid lightgray; border-radius:5px;">
 
                                 <tr>
-
                                     <td colspan="5">
-                                        <strong><?php echo date('l j F Y', strtotime($currentDate->format('Y-m-d'))); ?></strong>
+                                        <strong><?php echo date('l j F Y', strtotime($session_start_date->format('Y-m-d'))); ?></strong>
                                         <hr style="margin: 2px !important;" />
                                     </td>
                                 </tr>
+                                <?php if ($session_start_date == $startDate) { ?>
+                                    <tr>
+                                        <td colspan="5">Pre Test</td>
+                                    </tr>
+                                <?php } ?>
                                 <?php
                                 $query = "SELECT * FROM `training_batch_sessions` 
                                             WHERE training_id = '" . $training->training_id . "' 
                                             AND batch_id = '" . $batch->batch_id . "'
-                                            AND session_date = '" . $currentDate->format('Y-m-d') . "'
+                                            AND session_date = '" . $session_start_date->format('Y-m-d') . "'
                                             ORDER BY start_time ASC";
                                 $batch_sessions = $this->db->query($query)->result();
                                 foreach ($batch_sessions as $batch_session) {
@@ -224,11 +219,18 @@
                                             } ?></td>
 
                                     </tr>
-                                <?php } ?>
 
+                                <?php } ?>
+                                <?php if ($session_start_date == $endDate) { ?>
+                                    <tr>
+                                        <td colspan="5">Post Test</td>
+                                    </tr>
+                                <?php } ?>
                             </table>
 
-                        <?php  }
+                        <?php
+                            $session_start_date->modify('+1 day');
+                        }
                         ?>
 
 

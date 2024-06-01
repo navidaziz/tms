@@ -58,7 +58,7 @@
                         <li <?php if ($this->input->get('tab') == 'nomination') { ?>class="active" <?php } ?>>
                             <a href="<?php echo site_url(ADMIN_DIR . "trainings/view_training/" . $training->training_id) . "?tab=nomination" ?>">
                                 <i class="fa fa-users"></i>
-                                <span class="hidden-inline-mobile">Nominations</span></a>
+                                <span class="hidden-inline-mobile">Trainees Nominations</span></a>
                         </li>
                         <li <?php if ($this->input->get('tab') == 'training') { ?>class="active" <?php } ?>>
                             <a href="<?php echo site_url(ADMIN_DIR . "trainings/view_training/" . $training->training_id) . "?tab=training" ?>"><i class="fa fa-tasks" aria-hidden="true"></i>
@@ -220,6 +220,18 @@
                                                         <?php echo status($training->status); ?>
                                                     </td>
                                                 </tr>
+                                                <tr>
+                                                    <td colspan="2" style="text-align: center;">
+                                                        <?php if ($training->training_status == 0 or $training->training_status == 1) { ?>
+                                                            <a class="btn btn-danger" href="<?php echo site_url(ADMIN_DIR . "trainings/complete/" . $training->training_id); ?>">Mark As Complete</a>
+                                                        <?php } ?>
+                                                        <?php if ($training->training_status == 2) { ?>
+                                                            <h4>Completed</h4>
+                                                            <span><a href="<?php echo site_url(ADMIN_DIR . "trainings/active/" . $training->training_id); ?>">Active Again</a></span>
+
+                                                        <?php } ?>
+                                                    </td>
+                                                </tr>
 
 
                                             </tbody>
@@ -357,148 +369,71 @@
                             <!-- /TAB 1 -->
                         </div>
                         <div class="tab-pane fade <?php if ($this->input->get('tab') == 'nomination') { ?> active in<?php } ?>" id="box_tab2">
+
                             <div class="col-md-12">
-                                <div class="box border blue" id="messenger">
-                                    <div class="box-title">
-                                        <h4><i class="fa fa-users"></i>Facilitators</h4>
-                                    </div>
-                                    <div class="box-body">
 
-                                        <div class="table-responsive">
+                                <div class="table-responsive">
 
-                                            <table class="table" style="font-size: 11px;">
-                                                <thead>
-                                                    <thead>
-                                                        <tr>
-                                                            <th></th>
-                                                            <th>S.No</th>
-                                                            <th>Name</th>
-                                                            <th>Father Name</th>
-                                                            <th>Gender</th>
-                                                            <th>CNIC</th>
-                                                            <th>Designation</th>
-                                                            <th>District</th>
-                                                            <th>Qualification</th>
-                                                            <th>Mobile No.</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                </thead>
-                                                <tbody>
-                                                    <?php
-                                                    $query = "SELECT users.*, training_nominations.nomination_type, 
-                                                    training_nominations.id  FROM training_nominations 
-                                                    INNER JOIN users ON(users.user_id = training_nominations.user_id)
-                                                    AND training_nominations.nomination_type = 'Facilitator'
-                                                    WHERE training_nominations.training_id = " . $training->training_id;
-                                                    $nominations = $this->db->query($query)->result();
-                                                    $count = 1;
-                                                    foreach ($nominations as $nomination) : ?>
+                                    <table class="table" style="font-size: 11px;" id="d_table">
+
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>S.No</th>
+                                                <th>Name</th>
+                                                <th>Father Name</th>
+                                                <th>Gender</th>
+                                                <th>CNIC</th>
+                                                <th>User Name</th>
+                                                <th>Passowrd</th>
+                                                <th>Designation</th>
+                                                <th>District</th>
+                                                <th>Qualification</th>
+                                                <th>Mobile No.</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <?php
+                                            $query = "SELECT users.*, training_nominations.nomination_type, 
+        training_nominations.id  FROM training_nominations 
+        INNER JOIN users ON(users.user_id = training_nominations.user_id)
+        AND training_nominations.nomination_type = 'Trainee'
+        WHERE training_nominations.training_id = " . $training->training_id;
+                                            $nominations = $this->db->query($query)->result();
+                                            $count = 1;
+                                            foreach ($nominations as $nomination) : ?>
 
 
-                                                        <tr>
-                                                            <td> <a href="<?php echo site_url(ADMIN_DIR . "trainings/remove_nomination/" . $training->training_id . "/" . $nomination->id); ?>" onclick="return confirm('Are you sure? you want to remove')">
-                                                                    <i class="fa fa-times" aria-hidden="true"></i></a>
-                                                            </td>
-                                                            <td><?php echo $count++; ?></td>
-                                                            <td><?php echo $nomination->name; ?></td>
-                                                            <td><?php echo $nomination->father_name; ?></td>
-                                                            <td><?php echo $nomination->gender; ?></td>
-                                                            <td><?php echo $nomination->cnic; ?></td>
-                                                            <td><?php echo $nomination->designation; ?></td>
-                                                            <td><?php echo $nomination->district; ?></td>
-                                                            <td><?php echo $nomination->qualification; ?></td>
-                                                            <td><?php echo $nomination->user_mobile_number; ?></td>
-                                                            <td><button class="btn btn-link btn-sm" onclick="edit_nomination_profile(<?php echo $nomination->user_id ?>)">Edit</button></td>
-                                                        </tr>
+                                                <tr>
+                                                    <td> <a href="<?php echo site_url(ADMIN_DIR . "trainings/remove_nomination/" . $training->training_id . "/" . $nomination->id); ?>" onclick="return confirm('Are you sure? you want to remove')">
+                                                            <i class="fa fa-times" aria-hidden="true"></i></a>
+                                                    </td>
+                                                    <td><?php echo $count++; ?></td>
+                                                    <td><?php echo $nomination->name; ?></td>
+                                                    <td><?php echo $nomination->father_name; ?></td>
+                                                    <td><?php echo $nomination->gender; ?></td>
+                                                    <td><?php echo $nomination->cnic; ?></td>
+                                                    <td><?php echo $nomination->user_name; ?></td>
+                                                    <td><?php echo $nomination->user_password; ?></td>
+                                                    <td><?php echo $nomination->designation; ?></td>
+                                                    <td><?php echo $nomination->district; ?></td>
+                                                    <td><?php echo $nomination->qualification; ?></td>
+                                                    <td><?php echo $nomination->user_mobile_number; ?></td>
+                                                    <td><button class="btn btn-link btn-sm" onclick="edit_nomination_profile(<?php echo $nomination->user_id ?>)">Edit</button></td>
+                                                </tr>
 
 
-                                                    <?php endforeach; ?>
-                                                </tbody>
-                                            </table>
-
-                                            <div style="text-align: center;">
-                                                <button onclick="add_nomination_form('resource_person');" class="btn btn-primary btn-sm"> Add New Facilitator</button>
-                                            </div>
-
-
-                                        </div>
-
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                    <div style="text-align: center;">
+                                        <button onclick="add_nomination_form('trainee');" class="btn btn-primary btn-sm"> Add New Trainee</button>
 
                                     </div>
 
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="box border blue" id="messenger">
-                                    <div class="box-title">
-                                        <h4><i class="fa fa-users"></i>Trainees</h4>
-                                    </div>
-                                    <div class="box-body">
 
-                                        <div class="table-responsive">
-
-                                            <table class="table" style="font-size: 11px;">
-                                                <thead>
-                                                    <thead>
-                                                        <tr>
-                                                            <th></th>
-                                                            <th>S.No</th>
-                                                            <th>Name</th>
-                                                            <th>Father Name</th>
-                                                            <th>Gender</th>
-                                                            <th>CNIC</th>
-                                                            <th>Designation</th>
-                                                            <th>District</th>
-                                                            <th>Qualification</th>
-                                                            <th>Mobile No.</th>
-                                                            <th>Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                </thead>
-                                                <tbody>
-                                                    <?php
-                                                    $query = "SELECT users.*, training_nominations.nomination_type, 
-                                                    training_nominations.id  FROM training_nominations 
-                                                    INNER JOIN users ON(users.user_id = training_nominations.user_id)
-                                                    AND training_nominations.nomination_type = 'Trainee'
-                                                    WHERE training_nominations.training_id = " . $training->training_id;
-                                                    $nominations = $this->db->query($query)->result();
-                                                    $count = 1;
-                                                    foreach ($nominations as $nomination) : ?>
-
-
-                                                        <tr>
-                                                            <td> <a href="<?php echo site_url(ADMIN_DIR . "trainings/remove_nomination/" . $training->training_id . "/" . $nomination->id); ?>" onclick="return confirm('Are you sure? you want to remove')">
-                                                                    <i class="fa fa-times" aria-hidden="true"></i></a>
-                                                            </td>
-                                                            <td><?php echo $count++; ?></td>
-                                                            <td><?php echo $nomination->name; ?></td>
-                                                            <td><?php echo $nomination->father_name; ?></td>
-                                                            <td><?php echo $nomination->gender; ?></td>
-                                                            <td><?php echo $nomination->cnic; ?></td>
-                                                            <td><?php echo $nomination->designation; ?></td>
-                                                            <td><?php echo $nomination->district; ?></td>
-                                                            <td><?php echo $nomination->qualification; ?></td>
-                                                            <td><?php echo $nomination->user_mobile_number; ?></td>
-                                                            <td><button class="btn btn-link btn-sm" onclick="edit_nomination_profile(<?php echo $nomination->user_id ?>)">Edit</button></td>
-                                                        </tr>
-
-
-                                                    <?php endforeach; ?>
-                                                </tbody>
-                                            </table>
-                                            <div style="text-align: center;">
-                                                <button onclick="add_nomination_form('trainee');" class="btn btn-primary btn-sm"> Add New Trainee</button>
-
-                                            </div>
-
-
-
-                                        </div>
-
-
-                                    </div>
 
                                 </div>
                             </div>
@@ -580,4 +515,42 @@
             }
         }
     }
+</script>
+
+<script>
+    <?php $table_title = "For Training " . $training->title . "(Code: " . $training->code . ") " . date('d-m-Y h:m:s'); ?>
+    title = 'Nominated Trainees list ';
+    $(document).ready(function() {
+        $('#d_table').DataTable({
+            dom: 'Bfrtip',
+            paging: false,
+            title: title,
+            "order": [],
+            "ordering": true,
+            searching: true,
+            buttons: [
+
+                {
+                    extend: 'print',
+                    title: title,
+                    messageTop: '<?php echo $table_title; ?>'
+
+                },
+                {
+                    extend: 'excelHtml5',
+                    title: title,
+                    messageTop: '<?php echo $table_title; ?>'
+
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: title,
+                    pageSize: 'A4',
+                    orientation: 'landscape',
+                    messageTop: '<?php echo $table_title; ?>'
+
+                }
+            ]
+        });
+    });
 </script>

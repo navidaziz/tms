@@ -40,7 +40,11 @@
     </div>
 </div>
 <!-- /PAGE HEADER -->
+<?php
+$startDate = new DateTime($batch->batch_start_date);
+$endDate = new DateTime($batch->batch_end_date);
 
+$currentDate = clone $startDate; ?>
 <div class="row">
     <!-- MESSENGER -->
     <div class="col-md-12">
@@ -55,51 +59,54 @@
             <div class="box-body">
                 <div class="tabbable header-tabs">
                     <ul class="nav nav-tabs">
-
-                        <li <?php if ($tab == 'test_result') { ?>class="active" <?php } ?>>
-                            <a href="<?php echo site_url(ADMIN_DIR . 'trainings/training_batch/' . $training_id . '/' . $batch_id . '?tab=test_result') ?>">
-                                <i class="fa fa-check" aria-hidden="true"></i>
+                        <li <?php if ($this->input->get('tab') == 'test_result') { ?>class="active" <?php } ?>>
+                            <a href="#box_tab4" data-toggle="tab"><i class="fa fa-check" aria-hidden="true"></i>
                                 <span class="hidden-inline-mobile">Pre / Post Test Results</span></a>
                         </li>
-                        <li <?php if ($tab == 'attandance') { ?>class="active" <?php } ?>>
-                            <a href="<?php echo site_url(ADMIN_DIR . 'trainings/training_batch/' . $training_id . '/' . $batch_id . '?tab=attandance') ?>">
-                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                        <li <?php if ($this->input->get('tab') == 'attandance') { ?>class="active" <?php } ?>>
+                            <a href="#box_tab3" data-toggle="tab"><i class="fa fa-clock-o" aria-hidden="true"></i>
                                 <span class="hidden-inline-mobile">Attendance</span></a>
                         </li>
-                        <li <?php if ($tab == 'trainees') { ?>class="active" <?php } ?>>
-                            <a href="<?php echo site_url(ADMIN_DIR . 'trainings/training_batch/' . $training_id . '/' . $batch_id . '?tab=trainees') ?>">
+                        <li <?php if ($this->input->get('tab') == 'trainees') { ?>class="active" <?php } ?>>
+                            <a href="#box_tab2" data-toggle="tab">
                                 <i class="fa fa-users"></i>
                                 <span class="hidden-inline-mobile">Trainees</span></a>
                         </li>
-                        <li <?php if ($tab == 'session') { ?>class="active" <?php } ?>>
-                            <a href="<?php echo site_url(ADMIN_DIR . 'trainings/training_batch/' . $training_id . '/' . $batch_id . '?tab=session') ?>">
-                                <i class="fa fa-calendar" aria-hidden="true"></i>
+                        <li <?php if ($this->input->get('tab') == 'session') { ?>class="active" <?php } ?>>
+                            <a href="#box_tab1" data-toggle="tab"><i class="fa fa-calendar" aria-hidden="true"></i>
                                 <span class="hidden-inline-mobile">Day Wise Sessions and Schedule</span></a>
                         </li>
-                        <li <?php if ($tab == 'facilitators') { ?>class="active" <?php } ?>>
-                            <a href="<?php echo site_url(ADMIN_DIR . 'trainings/training_batch/' . $training_id . '/' . $batch_id . '?tab=facilitators') ?>">
-                                <i class="fa fa-user" aria-hidden="true"></i>
+                        <li <?php if ($this->input->get('tab') == 'facilitators') { ?>class="active" <?php } ?>>
+                            <a href="#box_tab5" data-toggle="tab"><i class="fa fa-calendar" aria-hidden="true"></i>
                                 <span class="hidden-inline-mobile">Facilitators</span></a>
                         </li>
 
                     </ul>
-
                     <div class="tab-content">
-                        <?php if ($tab == 'session') { ?>
+                        <div class="tab-pane fade in <?php if ($this->input->get('tab') == 'session') { ?> in active <?php } ?>" id="box_tab1">
                             <?php $this->load->view(ADMIN_DIR . "trainings/training_batch/training_batch_session", $this->data); ?>
-                        <?php } ?>
-                        <?php if ($tab == 'facilitators') { ?>
+                        </div>
+                        <div class="tab-pane fade in <?php if ($this->input->get('tab') == 'facilitators') { ?> in active <?php } ?>" id="box_tab5">
                             <?php $this->load->view(ADMIN_DIR . "trainings/training_batch/training_batch_facilitators", $this->data); ?>
-                        <?php } ?>
-                        <?php if ($tab == 'trainees') { ?>
+
+                        </div>
+                        <div class="tab-pane fade in <?php if ($this->input->get('tab') == 'trainees') { ?> in active <?php } ?>" id="box_tab2">
+
                             <?php $this->load->view(ADMIN_DIR . "trainings/training_batch/training_batch_trainees", $this->data); ?>
-                        <?php } ?>
-                        <?php if ($tab == 'attandance') { ?>
+
+                        </div>
+
+
+                        <div class="tab-pane fade in <?php if ($this->input->get('tab') == 'attendance') { ?> in active <?php } ?>" id="box_tab3">
                             <?php $this->load->view(ADMIN_DIR . "trainings/training_batch/training_batch_attendance", $this->data); ?>
-                        <?php } ?>
-                        <?php if ($tab == 'test_result') { ?>
+
+
+                        </div>
+
+                        <div class="tab-pane fade in <?php if ($this->input->get('tab') == 'test_result') { ?> in active <?php } ?>" id="box_tab4">
                             <?php $this->load->view(ADMIN_DIR . "trainings/training_batch/training_batch_test_results", $this->data); ?>
-                        <?php } ?>
+
+                        </div>
 
                     </div>
                 </div>

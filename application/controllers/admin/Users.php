@@ -235,7 +235,7 @@ class Users extends Admin_Controller
             $this->add();
         }
     }
-
+ 
 
     /**
      * function to edit a User

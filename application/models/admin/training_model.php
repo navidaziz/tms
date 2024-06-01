@@ -26,6 +26,11 @@ class Training_model extends MY_Model
             ),
 
             array(
+                "field"  =>  "department_id",
+                "label"  =>  "Department",
+                "rules"  =>  "required"
+            ),
+            array(
                 "field"  =>  "level",
                 "label"  =>  "Level",
                 "rules"  =>  "required"
@@ -94,6 +99,7 @@ class Training_model extends MY_Model
         $training_total = $this->db->query($query)->row()->total;
 
         $inputs["code"]  =  date('Y') . "-" . ($training_total + 1);
+        $inputs["department_id"]  =  $this->input->post("department_id");
 
         $inputs["title"]  =  $this->input->post("title");
 
@@ -121,6 +127,7 @@ class Training_model extends MY_Model
     public function update_data($training_id, $image_field = NULL)
     {
         $inputs = array();
+        $inputs["department_id"]  =  $this->input->post("department_id");
 
         $inputs["code"]  =  $this->input->post("code");
 

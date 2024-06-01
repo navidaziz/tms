@@ -1,12 +1,11 @@
 <div class="modal-header">
-    <h5 style="display: inline;" class="modal-title" id="g_modal_title"><?php echo $title; ?></h5>
+    <h5 style="display: inline;" class="modal-title" id="g_modal_title">Add Profile</h5>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
 <div class="modal-body">
     <form id="nomination_form" method="post">
-        <input name="training_id" type="hidden" value="<?php echo $training_id ?>" />
         <input name="nomination_type" type="hidden" value="<?php echo $nomination_type ?>" />
         <div class="form-group row">
             <label for="cnic" class="col-sm-4 col-form-label">CNIC</label>
@@ -131,21 +130,10 @@
                 <input type="text" class="form-control" id="address" name="address" placeholder="Address">
             </div>
         </div>
-        <div class="form-group row">
-            <div style="text-align: center;">Do you want to nominate as (<?php
-                                                                            if ($nomination_type == 'resource_person') {
-                                                                                echo 'Facilitator';
-                                                                            }
-                                                                            if ($nomination_type == 'trainee') {
-                                                                                echo 'Trainee';
-                                                                            }
-                                                                            ?>) for this training? <input required type="radio" name="nomination" value="Yes" /> Yes
-                <span required style="margin: 10px;"></span> <input type="radio" name="nomination" value="No" /> No
-            </div>
-        </div>
+
         <div id="message_form"></div>
         <div style="text-align: center;">
-            <button class="btn btn-primary btn-sm" type="submit"><?php echo $title; ?></button>
+            <button class="btn btn-primary btn-sm" type="submit">Add Profile</button>
         </div>
 
     </form>
@@ -163,7 +151,7 @@
 
             $.ajax({
                 type: 'POST',
-                url: '<?php echo site_url(ADMIN_DIR . "/trainings/add_nomination"); ?>',
+                url: '<?php echo site_url(ADMIN_DIR . "facilitators/add_facilitator"); ?>',
                 data: formData,
                 success: function(data) {
                     var jsonData = JSON.parse(data);
