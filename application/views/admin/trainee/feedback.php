@@ -93,6 +93,34 @@
                 );
                 ?>
                 <form action="<?php echo site_url(ADMIN_DIR . 'trainee/submit_feedback'); ?>" method="post">
+                    <h4>Training Facilities Proforma</h4>
+                    <table class=" table table-bordered">
+
+                        <tr>
+                            <th>Feedback</th>
+                            <?php foreach ($ratings as $rating) { ?>
+                                <th><?php echo $rating; ?></th>
+                            <?php } ?>
+                        </tr>
+
+                        <tr>
+                            <th></th>
+                            <?php foreach ($ratings as $r_value => $rating) { ?>
+                                <td style="text-align: center;"><input required type="radio" value="<?php echo $r_value  ?>" name="training[<?php echo $training_id ?>]" /></td>
+                            <?php } ?>
+                        </tr>
+
+                        <tr>
+                            <th>Any Other Comments/ Suggestions</th>
+                            <td colspan="5" style="text-align: center;">
+                                <textarea style="width: 100%;" required name="training[<?php echo $training_id ?>][remarks]"></textarea>
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                    <h4>Facilitators Evaluation Proforma</h4>
                     <table class="table" id="db_table">
                         <thead>
                             <tr>
@@ -139,6 +167,13 @@
                                                     <?php } ?>
                                                 </tr>
                                             <?php } ?>
+                                            <tr>
+                                                <th>Any Other Comments/ Suggestions</th>
+                                                <td colspan="5" style="text-align: center;">
+                                                    <textarea style="width: 100%;" required name="facilitators[<?php echo $nomination->user_id ?>][remarks]"></textarea>
+                                                </td>
+
+                                            </tr>
 
                                         </table>
                                     </td>
@@ -148,7 +183,9 @@
                             <?php endforeach; ?>
                         </tbody>
                     </table>
-                    <input type="submit" value="submit feedback" name="submit feedback" />
+                    <div style="text-align: center;">
+                        <input class="btn btn-success" type="submit" value="submit feedback" name="submit feedback" />
+                    </div>
                 </form>
             </div>
         </div>

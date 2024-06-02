@@ -20,7 +20,7 @@
 
         </div>
         <div class="form-group row">
-            <label for="user_password" class="col-sm-4 col-form-label">Biometric ID</label>
+            <label for="user_password" class="col-sm-4 col-form-label">Account Password</label>
             <div class="col-sm-8">
                 <input type="text" value="<?php echo $user->user_password; ?>" class="form-control" id="user_password" name="user_password" placeholder="Biometric ID">
             </div>
