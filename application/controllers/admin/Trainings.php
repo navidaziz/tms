@@ -441,7 +441,7 @@ class Trainings extends Admin_Controller
                     'address' => $this->input->post('address'),
                     'user_mobile_number' => $this->input->post('user_mobile_number'),
                     'user_name' => $this->input->post('cnic'),
-                    'user_password' => '123456',
+                    'user_password' => $this->input->post('user_password'),
                     'biometric_id' => $this->input->post('biometric_id')
                 );
                 if ($this->input->post('nomination_type') == 'resource_person') {
@@ -950,6 +950,8 @@ class Trainings extends Admin_Controller
         $this->form_validation->set_rules('address', 'Address', 'required');
         $this->form_validation->set_rules('user_mobile_number', 'User Mobile Number', 'required|numeric');
         $this->form_validation->set_rules('gender', 'Gender', 'required');
+        $this->form_validation->set_rules('user_password', 'Account Password', 'required');
+        $this->form_validation->set_rules('biometric_id', 'Biometric ID', 'required');
 
         if ($this->form_validation->run() == false) {
             // Validation failed
@@ -969,6 +971,8 @@ class Trainings extends Admin_Controller
                 'address' => $this->input->post('address'),
                 'user_mobile_number' => $this->input->post('user_mobile_number'),
                 'user_name' => $this->input->post('cnic'),
+                'user_password' => $this->input->post('user_password'),
+                'biometric_id' => $this->input->post('biometric_id'),
             );
             $where['user_id'] = $user_id;
             $this->db->where($where);
