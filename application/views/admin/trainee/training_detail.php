@@ -104,8 +104,8 @@
                                     <tr>
                                         <td colspan="5">
                                             <?php
-                                            echo $currentDate->format('Y-m-d') . " >= " . $startDate->format('Y-m-d');
-                                            if ($date->format('Y-m-d') >= $startDate->format('Y-m-d')) { ?>
+                                            //echo $currentDate->format('Y-m-d') . " >= " . $startDate->format('Y-m-d');
+                                            if ($date >= $startDate) { ?>
 
                                                 <?php
                                                 $trainee_id = $this->session->userdata('userId');
