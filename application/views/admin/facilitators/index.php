@@ -55,13 +55,14 @@
                                 <th>Name</th>
                                 <th>Father Name</th>
                                 <th>Gender</th>
-                                <th>CNIC</th>
-                                <th>User Name</th>
+                                <th>CNIC/UserName</th>
+                              
                                 <th>Passowrd</th>
                                 <th>Designation</th>
                                 <th>District</th>
                                 <th>Qualification</th>
                                 <th>Mobile No.</th>
+                                <th>Biometric ID</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -79,13 +80,13 @@
                                     <td><?php echo $nomination->name; ?></td>
                                     <td><?php echo $nomination->father_name; ?></td>
                                     <td><?php echo $nomination->gender; ?></td>
-                                    <td><?php echo $nomination->cnic; ?></td>
-                                    <td><?php echo $nomination->user_name; ?></td>
+                                    <td><b><?php echo $nomination->cnic; ?></b></td>
                                     <td><?php echo $nomination->user_password; ?></td>
                                     <td><?php echo $nomination->designation; ?></td>
                                     <td><?php echo $nomination->district; ?></td>
                                     <td><?php echo $nomination->qualification; ?></td>
                                     <td><?php echo $nomination->user_mobile_number; ?></td>
+                                    <td><b><?php echo $nomination->biometric_id; ?></b></td>
                                     <td><button class="btn btn-link btn-sm" onclick="edit_nomination_profile(<?php echo $nomination->user_id ?>)">Edit</button></td>
                                 </tr>
 

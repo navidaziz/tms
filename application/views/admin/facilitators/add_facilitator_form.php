@@ -47,6 +47,7 @@
                                     $('#district').val(jsonData.district);
                                     $('#address').val(jsonData.address);
                                     $('#user_mobile_number').val(jsonData.user_mobile_number);
+                                    $('#biometric_id').val(jsonData.biometric_id);
                                     if (jsonData.gender == 'Male') {
                                         $('#male').prop('checked', true);
                                     }
@@ -131,9 +132,17 @@
             </div>
         </div>
 
+
+        <div class="form-group row">
+            <label for="address" class="col-sm-4 col-form-label">Biometric ID</label>
+            <div class="col-sm-8">
+                <input type="text" required class="form-control" id="biometric_id" name="biometric_id" placeholder="Biometric ID">
+            </div>
+        </div>
+
         <div id="message_form"></div>
         <div style="text-align: center;">
-            <button class="btn btn-primary btn-sm" type="submit">Add Profile</button>
+            <button class="btn btn-primary btn-sm" type="submit">Add facilitator</button>
         </div>
 
     </form>

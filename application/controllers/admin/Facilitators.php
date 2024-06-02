@@ -73,6 +73,7 @@ class Facilitators extends Admin_Controller
         $this->form_validation->set_rules('designation', 'Designation', 'required');
         $this->form_validation->set_rules('district', 'District', 'required');
         $this->form_validation->set_rules('address', 'Address', 'required');
+        $this->form_validation->set_rules('biometric_id', 'Biometric id', 'required|numeric');
         //$this->form_validation->set_rules('nomination', 'Nomination', 'required');
         $this->form_validation->set_rules('user_mobile_number', 'User Mobile Number', 'required|numeric');
 
@@ -95,6 +96,7 @@ class Facilitators extends Admin_Controller
                     'address' => $this->input->post('address'),
                     'user_mobile_number' => $this->input->post('user_mobile_number'),
                     'user_name' => $this->input->post('cnic'),
+                    'biometric_id' => $this->input->post('biometric_id'),
                     'user_password' => '123456'
                 );
                 if ($this->input->post('nomination_type') == 'resource_person') {
@@ -164,7 +166,8 @@ class Facilitators extends Admin_Controller
         $this->form_validation->set_rules('address', 'Address', 'required');
         $this->form_validation->set_rules('user_mobile_number', 'User Mobile Number', 'required|numeric');
         $this->form_validation->set_rules('gender', 'Gender', 'required');
-        $this->form_validation->set_rules('user_name', 'Account User Name', 'required');
+       // $this->form_validation->set_rules('user_name', 'Account User Name', 'required');
+        $this->form_validation->set_rules('biometric_id', 'Biometric Id', 'required');
         $this->form_validation->set_rules('user_password', 'Account Password', 'required');
 
 
@@ -185,7 +188,7 @@ class Facilitators extends Admin_Controller
                 'district' => $this->input->post('district'),
                 'address' => $this->input->post('address'),
                 'user_mobile_number' => $this->input->post('user_mobile_number'),
-                'user_name' => $this->input->post('user_name'),
+                'biometric_id' => $this->input->post('biometric_id'),
                 'user_password' => $this->input->post('user_password'),
             );
             $where['user_id'] = $user_id;
