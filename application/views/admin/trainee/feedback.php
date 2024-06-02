@@ -125,7 +125,7 @@ $ratings = array(
                             <tr>
                                 <th>Any Other Comments/ Suggestions</th>
                                 <td colspan="5" style="text-align: center;">
-                                    <textarea style="width: 100%;" required name="training[remarks]"></textarea>
+                                    <textarea style="width: 100%;" name="training[remarks]"></textarea>
                                 </td>
 
                             </tr>
@@ -181,7 +181,7 @@ $ratings = array(
                                                 <tr>
                                                     <th>Any Other Comments/ Suggestions</th>
                                                     <td colspan="5" style="text-align: center;">
-                                                        <textarea style="width: 100%;" required name="facilitators[<?php echo $nomination->user_id ?>][remarks]"></textarea>
+                                                        <textarea style="width: 100%;" name="facilitators[<?php echo $nomination->user_id ?>][remarks]"></textarea>
                                                     </td>
 
                                                 </tr>
