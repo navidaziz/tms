@@ -151,8 +151,11 @@
                                                     </div>
                                                 <?php } ?>
                                             <?php } else { ?>
-                                                The Training Pre Test will be available online on <?php echo date('l, j F Y', strtotime($date->format('Y-m-d'))); ?>.
-
+                                                <h4 style="text-align: center; color:red;">
+                                                    <strong>
+                                                        The Training Pre Test will be available online on <?php echo date('l, j F Y', strtotime($date->format('Y-m-d'))); ?>.
+                                                    </strong>
+                                                </h4>
                                             <?php } ?>
                                         </td>
                                     </tr>
@@ -258,8 +261,11 @@
                                                     </div>
                                                 <?php } ?>
                                             <?php } else { ?>
-                                                The Training Post Test will be available online on <?php echo date('l, j F Y', strtotime($date->format('Y-m-d'))); ?>.
-
+                                                <h4 style="text-align: center; color:red;">
+                                                    <strong>
+                                                        The Training Post Test will be available online on <?php echo date('l, j F Y', strtotime($date->format('Y-m-d'))); ?>.
+                                                    </strong>
+                                                </h4>
                                             <?php } ?>
                                         </td>
                                     </tr>
