@@ -20,6 +20,7 @@
                 </tr>
                 <tr>
                     <th>S.No</th>
+                    <th>Role</th>
                     <th>Name</th>
                     <th>Father Name</th>
                     <th>CNIC</th>
@@ -42,9 +43,10 @@
             </thead>
             <tbody>
                 <?php
-                $query = "SELECT users.*, training_nominations.nomination_type,  training_nominations.id
+                $query = "SELECT users.*, roles.role_title, training_nominations.nomination_type,  training_nominations.id
                                             FROM training_nominations 
                                             INNER JOIN users ON(users.user_id = training_nominations.user_id)
+                                            INNER JOIN roles ON(roles.role_id = users.role_id)
                                             WHERE training_nominations.batch_id = " . $batch->batch_id . "
                                             AND training_nominations.training_id = " . $training->training_id;
                 $nominations = $this->db->query($query)->result();
@@ -52,6 +54,7 @@
                 foreach ($nominations as $nomination) : ?>
                     <tr>
                         <td><?php echo $count++; ?></td>
+                        <td><?php echo $nomination->role_title; ?></td>
                         <td><?php echo $nomination->name; ?></td>
                         <td><?php echo $nomination->father_name; ?></td>
                         <td><?php echo $nomination->cnic; ?></td>

@@ -36,6 +36,7 @@
                                             FROM training_nominations 
                                             INNER JOIN users ON(users.user_id = training_nominations.user_id)
                                             WHERE training_nominations.batch_id = " . $batch->batch_id . "
+                                            AND users.role_id = 4
                                             AND training_nominations.training_id = " . $training->training_id;
                 $nominations = $this->db->query($query)->result();
                 $count = 1;
