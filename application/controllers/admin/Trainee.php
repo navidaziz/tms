@@ -106,7 +106,7 @@ class Trainee extends Admin_Controller
         $this->data['test_type'] = "pre_test";
 
 
-        $this->data["title"] = 'Session Pre Test';
+        $this->data["title"] = 'Training Pre Test';
 
         $this->data["view"] = ADMIN_DIR . "trainee/test";
         $this->load->view(ADMIN_DIR . "layout", $this->data);
@@ -131,7 +131,7 @@ class Trainee extends Admin_Controller
         $this->data['test_type'] = "post_test";
 
 
-        $this->data["title"] = 'Session Post Test';
+        $this->data["title"] = 'Training Post Test';
 
         $this->data["view"] = ADMIN_DIR . "trainee/test";
         $this->load->view(ADMIN_DIR . "layout", $this->data);
@@ -215,6 +215,17 @@ class Trainee extends Admin_Controller
     }
     public function submit_feedback()
     {
+
+        $training = $this->input->post('training');
+
+        $this->db->where('training_id', $training['training_id']);
+        $this->db->where('batch_id', $training['batch_id']);
+        $this->db->where('created_by', $this->session->userdata('userId'));
+        $this->db->delete('facilities_evaluations');
+        $training['created_by'] = $this->session->userdata('userId');
+        $this->db->insert('facilities_evaluations', $training);
+
+
         $facilitators = $this->input->post('facilitators');
         //delete records
         foreach ($facilitators as $facilitator_id => $inputs) {

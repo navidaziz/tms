@@ -69,124 +69,136 @@
     </div>
 </div>
 
-<!-- PAGE MAIN CONTENT -->
+<?php
+$facilitators_evaluations = array(
+    'subject_knowledge' => 'Subject Knowledge',
+    'lecture_contents' => 'Lecture Contents',
+    'teaching_methodology' => 'Teaching Methodology',
+    'time_utilization' => 'Time Utilization',
+    'participants_engagement' => 'Participants Engagement'
+);
+$training_evaluations = array(
+    'trainings_hall_environment' => 'Trainings Hall Environment',
+    'food' => 'Food',
+    'hostel' => 'hostel',
+    'extra_physical_activities' => 'Extra Physical Activities'
+);
+$ratings = array(
+    1 => 'Poor',
+    2 => 'Fair',
+    3 => 'Good',
+    4 => 'Very Good',
+    5 => 'Excellent'
+);
+?>
 <div class="row">
 
     <div class="col-md-12">
-        <div class="table-responsive">
+        <div class="box border blue" id="messenger" style="background-color: white!important;">
+            <div class="box-title">
+                <h4><i class="fa fa-comments-o"></i> Feedback</h4>
+            </div>
+            <div class="box-body">
 
-            <div class="box border blue" id="messenger">
-                <?php
-                $facilitators_evaluations = array(
-                    'subject_knowledge' => 'Subject Knowledge',
-                    'lecture_contents' => 'Lecture Contents',
-                    'teaching_methodology' => 'Teaching Methodology',
-                    'time_utilization' => 'Time Utilization',
-                    'participants_engagement' => 'Participants Engagement'
-                );
-                $ratings = array(
-                    1 => 'Poor',
-                    2 => 'Fair',
-                    3 => 'Good',
-                    4 => 'Very Good',
-                    5 => 'Excellent'
-                );
-                ?>
-                <form action="<?php echo site_url(ADMIN_DIR . 'trainee/submit_feedback'); ?>" method="post">
-                    <h4>Training Facilities Proforma</h4>
-                    <table class=" table table-bordered">
+                <div class="table-responsive">
 
-                        <tr>
-                            <th>Feedback</th>
-                            <?php foreach ($ratings as $rating) { ?>
-                                <th><?php echo $rating; ?></th>
-                            <?php } ?>
-                        </tr>
+                    <form action="<?php echo site_url(ADMIN_DIR . 'trainee/submit_feedback'); ?>" method="post">
+                        <input type="hidden" value="<?php echo $batch_id; ?>" name="training[batch_id]" />
+                        <input type="hidden" value="<?php echo $training_id; ?>" name="training[training_id]" />
 
-                        <tr>
-                            <th></th>
-                            <?php foreach ($ratings as $r_value => $rating) { ?>
-                                <td style="text-align: center;"><input required type="radio" value="<?php echo $r_value  ?>" name="training[<?php echo $training_id ?>]" /></td>
-                            <?php } ?>
-                        </tr>
-
-                        <tr>
-                            <th>Any Other Comments/ Suggestions</th>
-                            <td colspan="5" style="text-align: center;">
-                                <textarea style="width: 100%;" required name="training[<?php echo $training_id ?>][remarks]"></textarea>
-                            </td>
-
-                        </tr>
-
-                    </table>
-
-                    <h4>Facilitators Evaluation Proforma</h4>
-                    <table class="table" id="db_table">
-                        <thead>
+                        <h4>Training Facilities Feebback</h4>
+                        <table class=" table table-bordered">
                             <tr>
-                                <th>S.No</th>
-                                <th>Name</th>
-                                <th>Designation</th>
-                                <th>Qualification</th>
                                 <th>Feedback</th>
+                                <?php foreach ($ratings as $rating) { ?>
+                                    <th><?php echo $rating; ?></th>
+                                <?php } ?>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            $query = "SELECT users.*, training_nominations.nomination_type,  training_nominations.id
+                            <?php foreach ($training_evaluations as $index => $training_evaluation) { ?>
+                                <tr>
+                                    <th><?php echo $training_evaluation; ?></th>
+                                    <?php foreach ($ratings as $r_value => $rating) { ?>
+                                        <td style="text-align: center;"><input required type="radio" value="<?php echo $r_value  ?>" name="training[<?php echo $index; ?>]" /></td>
+                                    <?php } ?>
+                                </tr>
+                            <?php } ?>
+                            <tr>
+                                <th>Any Other Comments/ Suggestions</th>
+                                <td colspan="5" style="text-align: center;">
+                                    <textarea style="width: 100%;" required name="training[remarks]"></textarea>
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+                        <h4>Facilitators Evaluation</h4>
+                        <table class="table" id="db_table">
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Facilitator</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $query = "SELECT users.*, training_nominations.nomination_type,  training_nominations.id
                                             FROM training_nominations 
                                             INNER JOIN users ON(users.user_id = training_nominations.user_id)
                                             WHERE training_nominations.batch_id = " . $batch->batch_id . "
                                             AND training_nominations.nomination_type = 'Facilitator'
                                             AND training_nominations.training_id = " . $training->training_id;
-                            $nominations = $this->db->query($query)->result();
-                            $count = 1;
-                            foreach ($nominations as $nomination) : ?>
-                                <tr>
-                                    <td><?php echo $count++; ?></td>
-                                    <td><?php echo $nomination->name; ?></td>
-                                    <td><?php echo $nomination->designation; ?></td>
-                                    <td><?php echo $nomination->qualification; ?></td>
-                                    <td>
-                                        <input type="hidden" value="<?php echo $training_id; ?>" name="facilitators[<?php echo $nomination->user_id ?>][training_id]" />
-                                        <input type="hidden" value="<?php echo $batch_id; ?>" name="facilitators[<?php echo $nomination->user_id ?>][batch_id]" />
+                                $nominations = $this->db->query($query)->result();
+                                $count = 1;
+                                foreach ($nominations as $nomination) : ?>
+                                    <tr>
+                                        <td><?php echo $count++; ?></td>
+                                        <td>
+                                            <h4>
+                                                Name: <?php echo $nomination->name; ?><br />
+                                                Designation: <?php echo $nomination->designation; ?><br />
+                                                Qualification: <?php echo $nomination->qualification; ?>
+                                            </h4>
+                                            <input type="hidden" value="<?php echo $training_id; ?>" name="facilitators[<?php echo $nomination->user_id ?>][training_id]" />
+                                            <input type="hidden" value="<?php echo $batch_id; ?>" name="facilitators[<?php echo $nomination->user_id ?>][batch_id]" />
 
-                                        <table class=" table table-bordered">
+                                            <table class=" table table-bordered">
 
-                                            <tr>
-                                                <th>Feedback</th>
-                                                <?php foreach ($ratings as $rating) { ?>
-                                                    <th><?php echo $rating; ?></th>
-                                                <?php } ?>
-                                            </tr>
-                                            <?php foreach ($facilitators_evaluations as $index => $facilitators_evaluation) { ?>
                                                 <tr>
-                                                    <th><?php echo $facilitators_evaluation; ?></th>
-                                                    <?php foreach ($ratings as $r_value => $rating) { ?>
-                                                        <td style="text-align: center;"><input required type="radio" value="<?php echo $r_value  ?>" name="facilitators[<?php echo $nomination->user_id ?>][<?php echo $index; ?>]" /></td>
+                                                    <th>Feedback</th>
+                                                    <?php foreach ($ratings as $rating) { ?>
+                                                        <th><?php echo $rating; ?></th>
                                                     <?php } ?>
                                                 </tr>
-                                            <?php } ?>
-                                            <tr>
-                                                <th>Any Other Comments/ Suggestions</th>
-                                                <td colspan="5" style="text-align: center;">
-                                                    <textarea style="width: 100%;" required name="facilitators[<?php echo $nomination->user_id ?>][remarks]"></textarea>
-                                                </td>
+                                                <?php foreach ($facilitators_evaluations as $index => $facilitators_evaluation) { ?>
+                                                    <tr>
+                                                        <th><?php echo $facilitators_evaluation; ?></th>
+                                                        <?php foreach ($ratings as $r_value => $rating) { ?>
+                                                            <td style="text-align: center;"><input required type="radio" value="<?php echo $r_value  ?>" name="facilitators[<?php echo $nomination->user_id ?>][<?php echo $index; ?>]" /></td>
+                                                        <?php } ?>
+                                                    </tr>
+                                                <?php } ?>
+                                                <tr>
+                                                    <th>Any Other Comments/ Suggestions</th>
+                                                    <td colspan="5" style="text-align: center;">
+                                                        <textarea style="width: 100%;" required name="facilitators[<?php echo $nomination->user_id ?>][remarks]"></textarea>
+                                                    </td>
 
-                                            </tr>
+                                                </tr>
 
-                                        </table>
-                                    </td>
-                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
 
 
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                    <div style="text-align: center;">
-                        <input class="btn btn-success" type="submit" value="submit feedback" name="submit feedback" />
-                    </div>
-                </form>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                        <div style="text-align: center;">
+                            <input class="btn btn-success" type="submit" value="submit feedback" name="submit feedback" />
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

@@ -29,34 +29,38 @@
                 <li><?php echo $title; ?></li>
             </ul>
             <!-- /BREADCRUMBS -->
+            <!-- /BREADCRUMBS -->
             <div class="row">
 
                 <div class="col-md-12">
                     <div class="clearfix">
-                        <h3 class="content-t itle pull-left">
+                        <h4><?php echo $title; ?></h4>
+                        <h5 class="content-ti tle">
                             <?php
-
+                            $query = "SELECT trainings.*
+            FROM `training_nominations`
+            INNER JOIN trainings ON(trainings.training_id = training_nominations.training_id) 
+            WHERE training_nominations.training_id = '" . $training_id . "'
+            AND training_nominations.user_id = '" . $this->session->userdata('userId') . "'";
+                            $training = $this->db->query($query)->row();
                             ?>
-                            <h4>#<?php echo $training->code; ?>: <?php echo $training->title ?></h4>
-                            <smal> <?php echo $training->level; ?> /
-                                <?php echo $training->category; ?> /
-                                <?php echo $training->sub_category; ?> /
-                                <?php echo $training->type; ?> /
-                                <?php echo $training->training_for; ?>
-                                <br />
-                                <strong>
-                                    <i class="fa fa-map-marker" aria-hidden="true"></i>
-                                    Location: <?php echo $training->location; ?>
-                                    <span style="margin-left: 10px;"></span>
-                                    <i class="fa fa-clock-o" aria-hidden="true"></i>
-                                    From <?php echo date('D, j M Y', strtotime($training->start_date)); ?>
-                                    To <?php echo date('D, j M Y', strtotime($training->end_date)); ?>
-                                </strong>
-                            </smal>
-                        </h3>
+                            <?php echo $training->title ?>
+
+                        </h5>
+                        <?php
+                        $query = "SELECT training_batches.*
+                FROM `training_nominations`
+                INNER JOIN training_batches ON(training_batches.batch_id = training_nominations.batch_id)
+                WHERE training_nominations.batch_id = '" . $batch_id . "'
+                AND training_nominations.training_id = '" . $training->training_id . "'
+                AND training_nominations.user_id = '" . $this->session->userdata('userId') . "'";
+                        $batch = $this->db->query($query)->row();
+                        ?>
+                        <h5>T-Code: <?php echo $training->code; ?> : <?php echo $batch->batch_title; ?></h5>
+
+
                     </div>
                 </div>
-
 
 
             </div>
@@ -69,47 +73,8 @@
 <!-- PAGE MAIN CONTENT -->
 <div class="row">
     <!-- MESSENGER -->
-    <div class="col-md-4">
 
-
-        <div class="table-responsive">
-
-            <div class="box border blue" id="messenger">
-
-                <div class="box-body">
-
-
-                    <?php
-                    $query = "SELECT training_batches.*
-                                FROM `training_nominations`
-                                INNER JOIN training_batches ON(training_batches.batch_id = training_nominations.batch_id)
-                                WHERE training_nominations.batch_id = '" . $batch_id . "'
-                                AND training_nominations.training_id = '" . $training->training_id . "'
-                                AND training_nominations.user_id = '" . $this->session->userdata('userId') . "'";
-                    $batch = $this->db->query($query)->row();
-                    ?>
-                    <h4><?php echo $batch->batch_title; ?></h4>
-                    <small>
-                        <i class="fa fa-map-marker" aria-hidden="true"></i>
-
-                        Venue: <?php echo $batch->location; ?>
-                        <br />
-                        <i class="fa fa-clock-o" aria-hidden="true"></i>
-                        From
-                        <b><?php echo date('D j M Y', strtotime($batch->batch_start_date)); ?></b>
-                        To <b><?php echo date('D j M Y', strtotime($batch->batch_end_date)); ?></b>
-                        <br />
-                        <h3>Pre Test</h3>
-                        <hr />
-
-
-                </div>
-
-
-            </div>
-        </div>
-    </div>
-    <div class="col-md-8">
+    <div class="col-md-12">
         <div class="table-responsive">
 
             <div class="box border blue" id="messenger">
@@ -170,28 +135,28 @@
 
 
                                         <span style="margin-left: -45px; position: absolute; font-size: 25px; margin-top: -10px;  color:white;">A.</span>
-                                        <?php echo $question->a; ?>
+                                        <span style="font-size: 20px;"> <?php echo $question->a; ?> </span>
                                         <span class="pull-right"><input required type="radio" name="answer" value="<?php echo $question->a; ?>" /></span>
                                     </small>
                                 </div>
                                 <div class="col-sm-6" style="cursor:pointer" onclick="check_answer('<?php echo $question->b; ?>')">
                                     <small class="list-group-item" style="margin:2px; border-left: 40px solid hsl(27deg 91% 55%);" id="<?php echo $question->b; ?>">
                                         <span style="margin-left: -45px; position: absolute; font-size: 25px; margin-top: -10px;  color:white;">B.</span>
-                                        <?php echo $question->b; ?>
+                                        <span style="font-size: 20px;"> <?php echo $question->b; ?> </span>
                                         <span class="pull-right"><input required type="radio" name="answer" value="<?php echo $question->b; ?>" /></span>
                                     </small>
                                 </div>
                                 <div class="col-sm-6" style="cursor:pointer" onclick="check_answer('<?php echo $question->c; ?>')">
                                     <small class="list-group-item" style="margin:2px; border-left: 40px solid hsl(27deg 91% 55%);" id="<?php echo $question->c; ?>">
                                         <span style="margin-left: -45px; position: absolute; font-size: 25px; margin-top: -10px;  color:white;">C.</span>
-                                        <?php echo $question->c; ?>
+                                        <span style="font-size: 20px;"> <?php echo $question->c; ?> </span>
                                         <span class="pull-right"><input required type="radio" name="answer" value="<?php echo $question->c; ?>" /></span>
                                     </small>
                                 </div>
                                 <div class="col-sm-6" style="cursor:pointer" onclick="check_answer('<?php echo $question->d; ?>')">
                                     <small class="list-group-item" style="margin:2px; border-left: 40px solid hsl(27deg 91% 55%) " id="<?php echo $question->d; ?>">
                                         <span style="margin-left: -45px; position: absolute; font-size: 25px; margin-top: -10px; color:white;">D.</span>
-                                        <?php echo $question->d; ?>
+                                        <span style="font-size: 20px;"> <?php echo $question->d; ?> </span>
                                         <span class="pull-right"><input required type="radio" name="answer" value="<?php echo $question->d; ?>" /></span>
                                     </small>
                                 </div>
