@@ -162,7 +162,9 @@
                                 </div>
                             </div>
                             <div style="text-align: center; margin-top:10px">
-                                <button class="btn btn-primary btn-sm"><i class="fa fa-check-square-o" aria-hidden="true"></i> Submint Answer</button>
+                                <button class="btn btn-primary ">
+                                    <h4><i class="fa fa-check-square-o" aria-hidden="true"></i> Submint Answer</h4>
+                                </button>
                             </div>
                         </form>
 
