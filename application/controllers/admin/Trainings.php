@@ -409,6 +409,7 @@ class Trainings extends Admin_Controller
                 'is_unique' => 'The %s is already registered. Check CNIC first.'
             ));
         }
+        $this->form_validation->set_rules('biometric_id', 'Biometric ID', 'required');
         $this->form_validation->set_rules('name', 'Name', 'required');
         $this->form_validation->set_rules('gender', 'Gender', 'required');
         $this->form_validation->set_rules('father_name', 'Father Name', 'required');
@@ -440,7 +441,8 @@ class Trainings extends Admin_Controller
                     'address' => $this->input->post('address'),
                     'user_mobile_number' => $this->input->post('user_mobile_number'),
                     'user_name' => $this->input->post('cnic'),
-                    'user_password' => '123456'
+                    'user_password' => '123456',
+                    'biometric_id' => $this->input->post('biometric_id')
                 );
                 if ($this->input->post('nomination_type') == 'resource_person') {
                     $input['role_id'] = 3;
@@ -470,7 +472,8 @@ class Trainings extends Admin_Controller
                     'address' => $this->input->post('address'),
                     'user_mobile_number' => $this->input->post('user_mobile_number'),
                     'user_name' => $this->input->post('cnic'),
-                    'user_password' => '123456'
+                    'user_password' => '123456',
+                    'biometric_id' => $this->input->post('biometric_id')
                 );
 
                 if ($this->input->post('nomination_type') == 'resource_person') {

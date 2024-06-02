@@ -384,6 +384,7 @@
                                                 <th>Father Name</th>
                                                 <th>Gender</th>
                                                 <th>CNIC</th>
+                                                <th>Biometric ID</th>
                                                 <th>User Name</th>
                                                 <th>Passowrd</th>
                                                 <th>Designation</th>
@@ -397,10 +398,10 @@
                                         <tbody>
                                             <?php
                                             $query = "SELECT users.*, training_nominations.nomination_type, 
-        training_nominations.id  FROM training_nominations 
-        INNER JOIN users ON(users.user_id = training_nominations.user_id)
-        AND training_nominations.nomination_type = 'Trainee'
-        WHERE training_nominations.training_id = " . $training->training_id;
+                                                training_nominations.id  FROM training_nominations 
+                                                INNER JOIN users ON(users.user_id = training_nominations.user_id)
+                                                AND training_nominations.nomination_type = 'Trainee'
+                                                WHERE training_nominations.training_id = " . $training->training_id;
                                             $nominations = $this->db->query($query)->result();
                                             $count = 1;
                                             foreach ($nominations as $nomination) : ?>
@@ -415,6 +416,7 @@
                                                     <td><?php echo $nomination->father_name; ?></td>
                                                     <td><?php echo $nomination->gender; ?></td>
                                                     <td><?php echo $nomination->cnic; ?></td>
+                                                    <td><?php echo $nomination->biometric_id; ?></td>
                                                     <td><?php echo $nomination->user_name; ?></td>
                                                     <td><?php echo $nomination->user_password; ?></td>
                                                     <td><?php echo $nomination->designation; ?></td>

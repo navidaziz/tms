@@ -66,6 +66,12 @@
             </div>
         </div>
         <div class="form-group row">
+            <label for="biometric_id" class="col-sm-4 col-form-label">Biometric ID</label>
+            <div class="col-sm-8">
+                <input type="text" class="form-control" id="biometric_id" name="biometric_id" placeholder="Biometric ID">
+            </div>
+        </div>
+        <div class="form-group row">
             <label for="name" class="col-sm-4 col-form-label">Name</label>
             <div class="col-sm-8">
                 <input type="text" class="form-control" id="name" name="name" placeholder="Name">

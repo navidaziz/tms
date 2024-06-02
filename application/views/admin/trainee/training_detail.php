@@ -71,92 +71,7 @@
 
 <!-- PAGE MAIN CONTENT -->
 <div class="row">
-    <!-- MESSENGER -->
-    <div class="col-md-4">
 
-
-        <div class="table-responsive">
-
-            <div class="box border blue" id="messenger">
-
-                <div class="box-body">
-
-
-                    <div style="text-align: center;">
-                        <a class="btn btn-danger btn-sm" style="width: 50%;" href="<?php echo site_url(ADMIN_DIR . "trainee/pre_test/" . $training_id . "/" . $batch_id) ?>"> <i class="fa fa-check-square-o" aria-hidden="true"></i> Pre Test Assessment</a>
-                    </div>
-                    <strong>Pre Test Summary</strong>
-                    <table class="table table-bordered" style="font-size: 9px;">
-                        <tr>
-                            <th>Total Question</th>
-                            <th>Wrong Answers</th>
-                            <th>Correct Answers</th>
-                            <th>Percentage (%)</th>
-                        </tr>
-                        <?php
-                        $trainee_id = $this->session->userdata('userId');
-                        $query = "SELECT COUNT(*) as total, 
-                             SUM(IF(pre_test_result=1,1,0)) as correct_ans,
-                                        SUM(IF(pre_test_result=0,1,0)) as wrong_ans 
-                                        FROM training_tests
-                                            WHERE training_id = " . $training->training_id . "
-                                            AND batch_id = " . $batch_id . "
-                                            AND trainee_id = " . $trainee_id . "";
-                        $summary = $this->db->query($query)->row();
-
-
-                        ?>
-                        <tr>
-                            <td><?php echo $summary->total; ?></td>
-                            <td><?php echo $summary->wrong_ans; ?></td>
-                            <td><?php echo $summary->correct_ans; ?></td>
-                            <td><?php
-                                if ($summary->total) {
-                                    echo round(($summary->correct_ans * 100) / $summary->total, 2) . " %";
-                                } ?></td>
-                        </tr>
-                    </table>
-                    <div style="text-align: center;">
-                        <a class="btn btn-danger btn-sm" style="width: 50%;" href="<?php echo site_url(ADMIN_DIR . "trainee/post_test/" . $training_id . "/" . $batch_id) ?>"> <i class="fa fa-check-square-o" aria-hidden="true"></i> Post Test Assessment</a>
-                    </div>
-                    <strong>Post Test Summary</strong>
-                    <table class="table table-bordered" style="font-size: 9px;">
-                        <tr>
-                            <th>Total Question</th>
-                            <th>Wrong Answers</th>
-                            <th>Correct Answers</th>
-                            <th>Percentage (%)</th>
-                        </tr>
-                        <?php
-                        $trainee_id = $this->session->userdata('userId');
-                        $query = "SELECT COUNT(*) as total, 
-                             SUM(IF(post_test_result=1,1,0)) as correct_ans,
-                                        SUM(IF(post_test_result=0,1,0)) as wrong_ans 
-                                        FROM training_tests
-                                            WHERE training_id = " . $training->training_id . "
-                                            AND batch_id = " . $batch_id . "
-                                            AND trainee_id = " . $trainee_id . "";
-                        $summary = $this->db->query($query)->row();
-
-
-                        ?>
-                        <tr>
-                            <td><?php echo $summary->total; ?></td>
-                            <td><?php echo $summary->wrong_ans; ?></td>
-                            <td><?php echo $summary->correct_ans; ?></td>
-                            <td><?php
-                                if ($summary->total) {
-                                    echo round(($summary->correct_ans * 100) / $summary->total, 2) . " %";
-                                }
-                                ?></td>
-                        </tr>
-                    </table>
-                </div>
-
-
-            </div>
-        </div>
-    </div>
     <div class="col-md-8">
         <div class="table-responsive">
 
@@ -164,33 +79,89 @@
 
                 <div class="box-body">
                     <div class="table-responsive">
+                        <h4>Training <?php echo $batch->batch_title; ?> Schedule</h4>
                         <?php
+                        $day = 1;
+                        date_default_timezone_set("Asia/Karachi");
                         $startDate = new DateTime($batch->batch_start_date);
                         $endDate = new DateTime($batch->batch_end_date);
-
-                        $session_start_date = clone $startDate;
+                        $currentDate = new DateTime();
+                        $date = clone $startDate;
                         $count = 1;
-                        while ($session_start_date <= $endDate) {
+                        while ($date <= $endDate) {
 
                         ?>
                             <table style=" width: 100%; border-collapse: separate; border-spacing: 2px; margin-bottom:10px; border:1px solid lightgray; border-radius:5px;">
 
                                 <tr>
                                     <td colspan="5">
-                                        <strong><?php echo date('l j F Y', strtotime($session_start_date->format('Y-m-d'))); ?></strong>
+                                        <h5><strong>Day <?php echo $day++; ?>. <?php echo date('l j F Y', strtotime($date->format('Y-m-d'))); ?></strong></h5>
                                         <hr style="margin: 2px !important;" />
                                     </td>
                                 </tr>
-                                <?php if ($session_start_date == $startDate) { ?>
+                                <?php if (strtotime($date->format('Y-m-d')) == strtotime($startDate->format('Y-m-d'))) {
+                                ?>
                                     <tr>
-                                        <td colspan="5">Pre Test</td>
+                                        <td colspan="5">
+                                            <?php
+                                            //echo $currentDate->format('Y-m-d') . " >= " . $startDate->format('Y-m-d');
+                                            if ($date->format('Y-m-d') >= $startDate->format('Y-m-d')) { ?>
+
+                                                <?php
+                                                $trainee_id = $this->session->userdata('userId');
+                                                $query = "SELECT COUNT(*) as total, 
+                                                SUM(IF(pre_test_result=1,1,0)) as correct_ans,
+                                                SUM(IF(pre_test_result=0,1,0)) as wrong_ans 
+                                                FROM training_tests
+                                                WHERE training_id = " . $training->training_id . "
+                                                AND batch_id = " . $batch_id . "
+                                                AND trainee_id = " . $trainee_id . "";
+                                                $summary = $this->db->query($query)->row();
+                                                ?>
+                                                <?php if ($summary->total > 0 and $summary->total == ($summary->correct_ans + $summary->wrong_ans)) { ?>
+                                                    <strong>Pre Test Summary</strong>
+                                                    <table class="table" style="background-color: #F5F6F6;">
+                                                        <tr>
+                                                            <th>Total Question</th>
+                                                            <th>Wrong Answers</th>
+                                                            <th>Correct Answers</th>
+                                                            <th>Percentage (%)</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><?php echo $summary->total; ?></td>
+                                                            <td><?php echo $summary->wrong_ans; ?></td>
+                                                            <td><?php echo $summary->correct_ans; ?></td>
+                                                            <td><?php
+                                                                if ($summary->total) {
+                                                                    echo round(($summary->correct_ans * 100) / $summary->total, 2) . " %";
+                                                                } ?></td>
+                                                        </tr>
+                                                    </table>
+                                                <?php } else { ?>
+                                                    <div style="text-align: center;">
+                                                        <a class="btn btn-danger btn-sm" style="width: 50%;" href="<?php echo site_url(ADMIN_DIR . "trainee/pre_test/" . $training_id . "/" . $batch_id) ?>">
+                                                            <i class="fa fa-check-square-o" aria-hidden="true"></i> Pre Test Assessment
+                                                            <?php if ($summary->total > 0) {
+                                                                echo ' (Not Complete Yet!) ';
+                                                            } ?>
+                                                            <?php if ($summary->total == 0) {
+                                                                echo ' (Start Please)';
+                                                            } ?>
+                                                        </a>
+                                                    </div>
+                                                <?php } ?>
+                                            <?php } else { ?>
+                                                The Training Pre Test will be available online on <?php echo date('l, j F Y', strtotime($date->format('Y-m-d'))); ?>.
+
+                                            <?php } ?>
+                                        </td>
                                     </tr>
                                 <?php } ?>
                                 <?php
                                 $query = "SELECT * FROM `training_batch_sessions` 
                                             WHERE training_id = '" . $training->training_id . "' 
                                             AND batch_id = '" . $batch->batch_id . "'
-                                            AND session_date = '" . $session_start_date->format('Y-m-d') . "'
+                                            AND session_date = '" . $date->format('Y-m-d') . "'
                                             ORDER BY start_time ASC";
                                 $batch_sessions = $this->db->query($query)->result();
                                 foreach ($batch_sessions as $batch_session) {
@@ -221,15 +192,84 @@
                                     </tr>
 
                                 <?php } ?>
-                                <?php if ($session_start_date == $endDate) { ?>
+                                <?php
+
+                                if (strtotime($date->format('Y-m-d')) == strtotime($endDate->format('Y-m-d'))) { ?>
+
                                     <tr>
-                                        <td colspan="5">Post Test</td>
+                                        <td colspan="5">
+                                            <a class="btn btn-danger btn-sm" href="<?php echo site_url(ADMIN_DIR . "trainee/feedback/" . $training_id . "/" . $batch_id) ?>">
+                                                <i class="fa fa-comments-o" aria-hidden="true"></i> Feedback </a>
+                                            <?php
+                                            // echo $currentDate->format('Y-m-d') . " >= " . $endDate->format('Y-m-d');
+                                            if ($currentDate->format('Y-m-d') >= $endDate->format('Y-m-d')) { ?>
+
+                                                <?php
+
+                                                $trainee_id = $this->session->userdata('userId');
+                                                $query = "SELECT COUNT(*) as total, 
+                                                SUM(IF(post_test_result=1,1,0)) as correct_ans,
+                                                            SUM(IF(post_test_result=0,1,0)) as wrong_ans 
+                                                            FROM training_tests
+                                                WHERE training_id = " . $training->training_id . "
+                                                AND batch_id = " . $batch_id . "
+                                                    AND trainee_id = " . $trainee_id . "";
+                                                $summary = $this->db->query($query)->row();
+                                                $trainee_id = $this->session->userdata('userId');
+                                                $query = "SELECT COUNT(*) as total, 
+                                                SUM(IF(pre_test_result=1,1,0)) as correct_ans,
+                                                SUM(IF(pre_test_result=0,1,0)) as wrong_ans 
+                                                FROM training_tests
+                                                WHERE training_id = " . $training->training_id . "
+                                                AND batch_id = " . $batch_id . "
+                                                AND trainee_id = " . $trainee_id . "";
+                                                $summary = $this->db->query($query)->row();
+                                                ?>
+                                                <?php if ($summary->total > 0 and $summary->total == ($summary->correct_ans + $summary->wrong_ans)) { ?>
+                                                    <strong>Post Test Summary</strong>
+                                                    <table class="table" style="background-color: #F5F6F6;">
+                                                        <tr>
+                                                            <th>Total Question</th>
+                                                            <th>Wrong Answers</th>
+                                                            <th>Correct Answers</th>
+                                                            <th>Percentage (%)</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><?php echo $summary->total; ?></td>
+                                                            <td><?php echo $summary->wrong_ans; ?></td>
+                                                            <td><?php echo $summary->correct_ans; ?></td>
+                                                            <td><?php
+                                                                if ($summary->total) {
+                                                                    echo round(($summary->correct_ans * 100) / $summary->total, 2) . " %";
+                                                                } ?></td>
+                                                        </tr>
+                                                    </table>
+                                                <?php } else { ?>
+                                                    <div style="text-align: center;">
+                                                        <a class="btn btn-danger btn-sm" style="width: 50%;" href="<?php echo site_url(ADMIN_DIR . "trainee/post_test/" . $training_id . "/" . $batch_id) ?>">
+                                                            <i class="fa fa-check-square-o" aria-hidden="true"></i> Post Test Assessment
+                                                            <?php if ($summary->total > 0) {
+                                                                echo ' (Not Complete Yet!) ';
+                                                            } ?>
+                                                            <?php if ($summary->total == 0) {
+                                                                echo ' (Start Please)';
+                                                            } ?>
+                                                        </a>
+                                                    </div>
+                                                <?php } ?>
+                                            <?php } else { ?>
+                                                The Training Post Test will be available online on <?php echo date('l, j F Y', strtotime($date->format('Y-m-d'))); ?>.
+
+                                            <?php } ?>
+                                        </td>
                                     </tr>
+
+
                                 <?php } ?>
                             </table>
 
                         <?php
-                            $session_start_date->modify('+1 day');
+                            $date->modify('+1 day');
                         }
                         ?>
 
