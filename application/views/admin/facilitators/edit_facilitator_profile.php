@@ -87,12 +87,7 @@
             </div>
         </div>
 
-        <div class="form-group row">
-            <label for="user_name" class="col-sm-4 col-form-label">Account User Name</label>
-            <div class="col-sm-8">
-                <input type="text" value="<?php echo $user->user_name; ?>" class="form-control" id="user_name" name="user_name" placeholder="Account User Name">
-            </div>
-        </div>
+    
 
         <div class="form-group row">
             <label for="user_password" class="col-sm-4 col-form-label">Account Passowrd</label>
@@ -101,9 +96,18 @@
             </div>
         </div>
 
+
+        
+        <div class="form-group row">
+            <label for="address" class="col-sm-4 col-form-label">Biometric ID</label>
+            <div class="col-sm-8">
+                <input type="text" required value="<?php echo $user->biometric_id; ?>" class="form-control" id="biometric_id" name="biometric_id" placeholder="Biometric ID">
+            </div>
+        </div>
+
         <div id="message_form"></div>
         <div style="text-align: center;">
-            <button class="btn btn-primary btn-sm" type="submit">Update Profile</button>
+            <button class="btn btn-danger btn-sm" type="submit">Update Profile</button>
         </div>
 
     </form>
