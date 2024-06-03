@@ -420,6 +420,7 @@ class Trainings extends Admin_Controller
         $this->form_validation->set_rules('address', 'Address', 'required');
         $this->form_validation->set_rules('nomination', 'Nomination', 'required');
         $this->form_validation->set_rules('user_mobile_number', 'User Mobile Number', 'required|numeric');
+        $this->form_validation->set_rules('duty_station', 'Duty Station', 'required');
 
         if ($this->form_validation->run() == false) {
             // Validation failed
@@ -952,6 +953,7 @@ class Trainings extends Admin_Controller
         $this->form_validation->set_rules('gender', 'Gender', 'required');
         $this->form_validation->set_rules('user_password', 'Account Password', 'required');
         $this->form_validation->set_rules('biometric_id', 'Biometric ID', 'required');
+        $this->form_validation->set_rules('duty_station', 'Duty Station', 'required');
 
         if ($this->form_validation->run() == false) {
             // Validation failed

@@ -104,6 +104,12 @@
             </div>
         </div>
         <div class="form-group row">
+            <label for="duty_station" class="col-sm-4 col-form-label">Duty Station</label>
+            <div class="col-sm-8">
+                <input required type="text" class="form-control" id="duty_station" name="duty_station" placeholder="Duty Station">
+            </div>
+        </div>
+        <div class="form-group row">
             <label for="designation" class="col-sm-4 col-form-label">Designation</label>
             <div class="col-sm-8">
                 <input type="text" class="form-control" id="designation" name="designation" placeholder="Designation">
