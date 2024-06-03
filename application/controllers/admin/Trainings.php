@@ -443,7 +443,8 @@ class Trainings extends Admin_Controller
                     'user_mobile_number' => $this->input->post('user_mobile_number'),
                     'user_name' => $this->input->post('cnic'),
                     'user_password' => $this->input->post('user_password'),
-                    'biometric_id' => $this->input->post('biometric_id')
+                    'biometric_id' => $this->input->post('biometric_id'),
+                    'duty_station' => $this->input->post('duty_station')
                 );
                 if ($this->input->post('nomination_type') == 'resource_person') {
                     $input['role_id'] = 3;
@@ -975,6 +976,8 @@ class Trainings extends Admin_Controller
                 'user_name' => $this->input->post('cnic'),
                 'user_password' => $this->input->post('user_password'),
                 'biometric_id' => $this->input->post('biometric_id'),
+                'duty_station' => $this->input->post('duty_station'),
+
             );
             $where['user_id'] = $user_id;
             $this->db->where($where);
