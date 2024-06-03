@@ -1,5 +1,5 @@
 <div class="col-md-12">
-    <div class="table-responsive">
+    <div class="table-responsive" style="overflow-y: auto;">
 
         <table class="table" id="db_table">
             <thead>
