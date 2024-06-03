@@ -7,7 +7,12 @@
                     <th>S.No</th>
                     <th>Name</th>
                     <th>Father Name</th>
-                    <th>CNIC</th>
+                    <th>Gender</th>
+                    <th>CNIC/User Name</th>
+                    <th>Passowrd</th>
+                    <th>Biometric ID</th>
+                    <th>Department</th>
+                    <th>Duty Station</th>
                     <th>Designation</th>
                     <th>District</th>
                     <th>Qualification</th>
@@ -30,7 +35,12 @@
                         <td><?php echo $count++; ?></td>
                         <td><?php echo $nomination->name; ?></td>
                         <td><?php echo $nomination->father_name; ?></td>
+                        <td><?php echo $nomination->gender; ?></td>
                         <td><?php echo $nomination->cnic; ?></td>
+                        <td><?php echo $nomination->user_password; ?></td>
+                        <td><?php echo $nomination->biometric_id; ?></td>
+                        <td><?php echo $nomination->department; ?></td>
+                        <td><?php echo $nomination->duty_station; ?></td>
                         <td><?php echo $nomination->designation; ?></td>
                         <td><?php echo $nomination->district; ?></td>
                         <td><?php echo $nomination->qualification; ?></td>
