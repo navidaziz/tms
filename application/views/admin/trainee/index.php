@@ -53,11 +53,7 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>T-Code</th>
                                 <th>Training</th>
-                                <th>Training Batch</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -71,24 +67,21 @@
                             $trainings = $this->db->query($query)->result();
                             foreach ($trainings as $training) { ?>
                                 <tr>
-                                    <td></td>
+
+
                                     <td>
-                                        <?php echo $training->code; ?>
-                                    </td>
-                                    <td>
-                                        <?php echo $training->title ?><br />
+                                        (<?php echo $training->code; ?>): <?php echo $training->title ?><br />
                                         <small>
                                             <i class="fa fa-map-marker" aria-hidden="true"></i>
                                             Location: <?php echo $training->location; ?>
-                                            <span style="margin-left: 10px;"></span><br />
+                                            <!-- <span style="margin-left: 10px;"></span><br />
                                             <strong>
                                                 <i class="fa fa-clock-o" aria-hidden="true"></i>
                                                 From <?php echo date('D, j M Y', strtotime($training->start_date)); ?>
                                                 To <?php echo date('D, j M Y', strtotime($training->end_date)); ?>
-                                            </strong>
+                                            </strong> -->
                                         </small>
-                                    </td>
-                                    <td>
+
                                         <?php
                                         $query = "SELECT training_batches.*
                                 FROM `training_nominations`
@@ -98,7 +91,7 @@
                                 GROUP BY training_batches.batch_id";
                                         $batch = $this->db->query($query)->row();
                                         ?>
-                                        <?php echo $batch->batch_title; ?><br />
+                                        <h4><strong><?php echo $batch->batch_title; ?></strong></h4>
                                         <small>
                                             <i class="fa fa-map-marker" aria-hidden="true"></i>
                                             Training Venue: <?php echo $batch->location; ?><br />
@@ -108,14 +101,12 @@
                                             <b><?php echo date('D j M Y', strtotime($batch->batch_start_date)); ?></b>
                                             To <b><?php echo date('D j M Y', strtotime($batch->batch_end_date)); ?></b>
 
-
-
-                                    </td>
-                                    <td>
-
-                                        <a class="btn btn-link btn-sm" href="<?php echo site_url(ADMIN_DIR . 'trainee/training_detail/' . $training->training_id . '/' . $batch->batch_id) ?>">Manage </a>
+                                            <div style="text-align: center;">
+                                                <a class="btn btn-success" href="<?php echo site_url(ADMIN_DIR . 'trainee/training_detail/' . $training->training_id . '/' . $batch->batch_id) ?>">Open Training </a>
+                                            </div>
 
                                     </td>
+
                                 </tr>
 
                             <?php } ?>
