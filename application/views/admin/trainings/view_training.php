@@ -372,7 +372,7 @@
 
                             <div class="col-md-12">
 
-                                <div class="table-responsive">
+                                <div class="table-responsive" style="overflow-y: auto;">
 
                                     <table class="table" style="font-size: 11px;" id="d_table">
 
@@ -383,10 +383,9 @@
                                                 <th>Name</th>
                                                 <th>Father Name</th>
                                                 <th>Gender</th>
-                                                <th>CNIC</th>
-                                                <th>Biometric ID</th>
-                                                <th>User Name</th>
+                                                <th>CNIC/User Name</th>
                                                 <th>Passowrd</th>
+                                                <th>Biometric ID</th>
                                                 <th>Department</th>
                                                 <th>Duty Station</th>
                                                 <th>Designation</th>
@@ -418,9 +417,8 @@
                                                     <td><?php echo $nomination->father_name; ?></td>
                                                     <td><?php echo $nomination->gender; ?></td>
                                                     <td><?php echo $nomination->cnic; ?></td>
-                                                    <td><?php echo $nomination->biometric_id; ?></td>
-                                                    <td><?php echo $nomination->user_name; ?></td>
                                                     <td><?php echo $nomination->user_password; ?></td>
+                                                    <td><?php echo $nomination->biometric_id; ?></td>
                                                     <td><?php echo $nomination->department; ?></td>
                                                     <td><?php echo $nomination->duty_station; ?></td>
                                                     <td><?php echo $nomination->designation; ?></td>
