@@ -4,9 +4,52 @@
         <table class="table table-bordered table_small" id="db_table" style="font-size: 9px;">
             <thead>
                 <tr>
-                    <th colspan="8"></th>
-                    <th colspan="4">Pre Test Result</th>
-                    <th colspan="4">Post Test Result</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+
+
+                </tr>
+            </thead>
+
+
+            <tbody>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+
+                    <th colspan="4">Pre Test</th>
+                    <th style="display: none;"></th>
+                    <th style="display: none;"></th>
+                    <th style="display: none;"></th>
+
+
+                    <th colspan="4">Post Test</th>
+                    <th style="display: none;"></th>
+                    <th style="display: none;"></th>
+                    <th style="display: none;"></th>
+
 
                 </tr>
                 <tr>
@@ -29,8 +72,6 @@
                     <th>Correct Answers</th>
                     <th>Percentage (%)</th>
                 </tr>
-            </thead>
-            <tbody>
                 <?php
                 $query = "SELECT users.*, training_nominations.nomination_type,  training_nominations.id
                                             FROM training_nominations 
@@ -115,7 +156,7 @@
             paging: false,
             title: title,
             "order": [],
-            "ordering": true,
+            "ordering": false,
             searching: true,
             buttons: [
 
