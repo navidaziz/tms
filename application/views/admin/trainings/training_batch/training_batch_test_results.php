@@ -22,7 +22,7 @@
                     <th></th>
                     <th></th>
                     <th></th>
-
+                    <th></th>
 
                 </tr>
             </thead>
@@ -49,6 +49,8 @@
                     <th style="display: none;"></th>
                     <th style="display: none;"></th>
                     <th style="display: none;"></th>
+                    <th></th>
+
 
 
                 </tr>
@@ -71,6 +73,7 @@
                     <th>Wrong Answers</th>
                     <th>Correct Answers</th>
                     <th>Percentage (%)</th>
+                    <th>Training Certificates</th>
                 </tr>
                 <?php
                 $query = "SELECT users.*, training_nominations.nomination_type,  training_nominations.id
@@ -81,7 +84,7 @@
                                             AND training_nominations.training_id = " . $training->training_id;
                 $nominations = $this->db->query($query)->result();
                 $count = 1;
-                foreach ($nominations as $nomination) : ?>
+                foreach ($nominations as $nomination) { ?>
                     <tr>
                         <td><?php echo $count++; ?></td>
                         <td><?php echo $nomination->name; ?></td>
@@ -104,7 +107,7 @@
                         $summary = $this->db->query($query)->row();
                         ?>
 
-                        <td><?php echo $summary->total; ?></td>
+                        <td><?php echo $pre_test = $summary->total; ?></td>
                         <td><?php echo $summary->wrong_ans; ?></td>
                         <td><?php echo $summary->correct_ans; ?></td>
                         <td><?php
@@ -114,7 +117,7 @@
                             ?></td>
 
                         <?php
-                        $trainee_id = $this->session->userdata('userId');
+                        // $trainee_id = $this->session->userdata('userId');
                         $query = "SELECT COUNT(*) as total, 
                                                                 SUM(IF(post_test_result=1,1,0)) as correct_ans,
                                                                     SUM(IF(post_test_result=0,1,0)) as wrong_ans 
@@ -123,7 +126,7 @@
                                                                         AND batch_id = " . $batch->batch_id . "
                                                                         AND trainee_id = " . $nomination->user_id . "";
                         $summary = $this->db->query($query)->row(); ?>
-                        <td><?php echo $summary->total; ?></td>
+                        <td><?php echo $post_test =  $summary->total; ?></td>
                         <td><?php echo $summary->wrong_ans; ?></td>
                         <td><?php echo $summary->correct_ans; ?></td>
                         <td><?php
@@ -131,13 +134,32 @@
                                 echo @round(($summary->correct_ans * 100) / $summary->total, 2) . " %";
                             }
                             ?></td>
+                        <td>
+                            <?php if ($pre_test > 0 and $post_test > 0 and $pre_test == $post_test) { ?>
+                                <?php
 
+                                $query = "SELECT COUNT(*) as total FROM training_certificates 
+                                WHERE training_id = '" . $training_id . "'
+                                AND batch_id = '" . $batch_id . "'
+                                AND trainee_id = '" . $nomination->user_id . "' ";
+                                $trainee_certificate = $this->db->query($query)->row()->total;
+                                ?>
+                                <?php
+                                if ($trainee_certificate == 0) { ?>
+                                    <a class="btn btn-danger btn-sm" href="<?php echo site_url(ADMIN_DIR . 'trainings/generate_certificate/' . $training_id . '/' . $batch_id . '/' . $nomination->user_id) ?>">Generate Certificate</a>
+                                <?php } else { ?>
+                                    <a target="_blank" class="btn btn-success btn-sm" href="<?php echo site_url(ADMIN_DIR . 'trainings/print_certificate/' . $training_id . '/' . $batch_id . '/' . $nomination->user_id) ?>">Print Certificate</a>
+                                <?php } ?>
+                            <?php } else { ?>
+                                Tests Pending
+                            <?php } ?>
+                        </td>
 
 
                     </tr>
 
 
-                <?php endforeach; ?>
+                <?php } ?>
             </tbody>
         </table>
 

@@ -1080,4 +1080,216 @@ class Trainings extends Admin_Controller
         $this->session->set_flashdata("msg_success", 'Record remove successfully.');
         redirect(ADMIN_DIR . "trainings/view_training/" . $training_id . "?tab=test");
     }
+
+    public function generate_certificate($training_id, $batch_id, $trainee_id)
+    {
+        $training_id = (int) $training_id;
+        $batch_id = (int) $batch_id;
+        $trainee_id = (int) $trainee_id;
+
+        //check certificate created or not......
+        $query = "SELECT COUNT(*) as total FROM training_certificates 
+        WHERE training_id = '" . $training_id . "'
+        AND batch_id = '" . $batch_id . "'
+        AND trainee_id = '" . $trainee_id . "' ";
+        $trainee_certificate = $this->db->query($query)->row()->total;
+        if ($trainee_certificate == 0) {
+            $query = "SELECT * FROM trainings WHERE training_id = ?";
+            $training = $this->db->query($query, array($training_id))->row();
+
+            $query = "SELECT * FROM users WHERE user_id = ? and role_id = 4";
+            $trainee = $this->db->query($query, array($trainee_id))->row();
+
+            $query = "SELECT * FROM templates WHERE department_id = ?";
+            $template = $this->db->query($query, array($training->department_id))->row();
+
+            //create certificate ....
+
+            $inputs = array();
+            $inputs['department_id'] = $training->department_id;
+            $inputs['training_id'] = $training_id;
+            $inputs['batch_id'] = $batch_id;
+            $inputs['trainee_id	'] = $trainee_id;
+            $inputs['certificate_title'] = $template->certificate_title;
+            $inputs['certficate_sub_title'] = $template->certficate_sub_title;
+            $inputs['certificate_for'] = $template->certificate_for;
+            $awarded_to = $trainee->user_title;
+            if ($trainee->gender == 'Male') {
+                $awarded_to .= ' s/o ';
+            }
+            if ($trainee->gender == 'Female') {
+                $awarded_to .= ' d/o ';
+            }
+            $awarded_to .=  $trainee->father_name;
+            $inputs['awarded_to'] = $awarded_to;
+
+            $training_title = $training->title;
+            $inputs['training_title'] = $training_title;
+            $inputs['certificate_footer'] = $template->certificate_footer;
+            $inputs['left_signatory'] = $template->left_signatory;
+            $inputs['right_signatory'] = $template->right_signatory;
+            $inputs['created_by'] = $this->session->userdata('userId');
+            $this->db->insert('training_certificates', $inputs);
+            $certificate_id = $this->db->insert_id();
+
+            $where['certificate_id'] = $certificate_id;
+            $this->db->where($where);
+            $certificate_code['certificate_code'] = date('Y') . "-" . $certificate_id;
+            $this->db->update('training_certificates', $certificate_code);
+
+            //update certificate code here.....
+            redirect(ADMIN_DIR . "trainings/training_batch/" . $training_id . "/" . $batch_id . "?tab=test_result");
+        } else {
+            //certificate already created
+            echo 'Certificate already created.';
+        }
+    }
+    
+    public function print_certificate($training_id, $batch_id, $trainee_id)
+    {
+
+       
+        
+        function certificate_print_text($pdf, $x, $y, $align, $font='freeserif', $style, $size = 10, $text, $width = 0) {
+            $pdf->setFont($font, $style, $size);
+            $pdf->SetXY($x, $y);
+            $pdf->writeHTMLCell($width, 0, '', '', $text, 0, 0, 0, true, $align);
+        }
+        
+        $pdf = new Tc_pdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetTitle("Certificate");
+        $pdf->SetProtection(array('modify'));
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->SetAutoPageBreak(false, 0);
+        $pdf->AddPage();
+        
+            $x = 10;
+            $y = 40;
+        
+            
+            $sealx = 150;
+            $sealy = 220;
+            $seal = realpath(K_PATH_IMAGES."/seal.png");
+        
+            $sigx = 30;
+            $sigy = 230;
+            $sig = realpath(K_PATH_IMAGES."./signature.png");
+        
+            $custx = 30;
+            $custy = 230;
+        
+            $wmarkx = 26;
+            $wmarky = 58;
+            $wmarkw = 158;
+            $wmarkh = 170;
+            $wmark = realpath(K_PATH_IMAGES."/watermark.png");
+        
+            $brdrx = 0;
+            $brdry = 0;
+            $brdrw = 210;
+            $brdrh = 297;
+            $codey = 250;
+        
+        
+        $fontsans = 'helvetica';
+        $fontserif = 'times';
+        
+        // border
+        $pdf->SetLineStyle(array('width' => 1.5, 'color' => array(0,0,0)));
+        $pdf->Rect(10, 10, 190, 277);
+        // create middle line border
+        $pdf->SetLineStyle(array('width' => 0.2, 'color' => array(64,64,64)));
+        $pdf->Rect(13, 13, 184, 271);
+        // create inner line border
+        $pdf->SetLineStyle(array('width' => 1.0, 'color' => array(128,128,128)));
+        $pdf->Rect(16, 16, 178, 265);
+        
+        
+        // Set alpha to semi-transparency
+        if (file_exists($wmark)) {
+            $pdf->SetAlpha(0.2);
+            $pdf->Image($wmark, $wmarkx, $wmarky, $wmarkw, $wmarkh);
+        }
+        
+            $logox = 160;
+            $logoy = 17;
+            $logo = realpath(K_PATH_IMAGES."./watermark.png");
+        
+        $pdf->SetAlpha(1);
+        if (file_exists($logo)) {
+            $pdf->Image($logo, $logox, $logoy, '22', '');
+        }
+        
+        
+        
+            $KPlogox = 27;
+            $KPlogoy = 17;
+            $KPlogo = realpath(K_PATH_IMAGES."./KPlogo.png");
+        
+        $pdf->SetAlpha(1);
+        if (file_exists($KPlogo)) {
+            $pdf->Image($KPlogo, $KPlogox, $KPlogoy, '22', '');
+        }
+        
+        
+            $KPlogox = 93;
+            $KPlogoy = 240;
+            $KPlogo = realpath(K_PATH_IMAGES."./hcip_logo.png");
+        
+        $pdf->SetAlpha(1);
+        if (file_exists($KPlogo)) {
+            $pdf->Image($KPlogo, $KPlogox, $KPlogoy, '22', '');
+        }
+        
+        
+        
+        $pdf->SetAlpha(1);
+        if (file_exists($seal)) {
+          //  $pdf->Image($seal, $sealx, $sealy, '', '');
+        }
+        if (file_exists($sig)) {
+            //$pdf->Image($sig, $sigx, $sigy, '', '');
+        }
+        
+        // Add text
+        certificate_print_text($pdf, $x, $y - 6, 'C', $fontserif, 'B', 13, "HEALTH DEPARTMENT");
+        certificate_print_text($pdf, $x, $y - 12, 'C', $fontserif, 'B', 13, "GOVERNMENT OF KHYBER PAKHTUNKHWA");
+        
+        $pdf->SetTextColor(0, 0, 120);
+        certificate_print_text($pdf, $x, $y, 'C', $fontsans, '', 15, "PROVINCIAL HEALTH SERVICES ACADEMY");
+        $pdf->SetTextColor(0, 0, 0);
+        certificate_print_text($pdf, $x, $y + 30, 'C', $fontserif, '', 15, "CERTIFICATE OF ACHIEVEMENT");
+        certificate_print_text($pdf, $x, $y + 40, 'C', $fontserif, '', 14, "AWARDED TO");
+        certificate_print_text($pdf, $x, $y + 51, 'C', $fontsans, '', 30, "Yaseen Muhammad");
+        certificate_print_text($pdf, $x, $y + 67, 'C', $fontserif, '', 14, "ON COMPLETION OF");
+        
+        certificate_print_text($pdf, $x, $y + 82, 'C', $fontsans, '', 13, "FOUR MONTHS MANDATORY PROMOTIONAL TRAINING FOR IN-SERVICE MID & SENIOR LEVEL HEALTH MANAGERS");
+        //certificate_print_text($pdf, $x, $y + 72, 'C', $fontsans, '', 20, "the Butt of Many Jokes");
+        certificate_print_text($pdf, $x, $y + 100, 'C', $fontsans, '', 14,  "13th June 1992");
+        //certificate_print_text($pdf, $x, $y + 102, 'C', $fontserif, '', 10, "With a grade of 12%");
+        certificate_print_text($pdf, $x, $y + 112, 'C', $fontserif, '', 10, "AT");
+        certificate_print_text($pdf, $x, $y + 122, 'C', $fontserif, '', 14, "PROVINCIAL HEALTH SERVICES ACADEMY PESHAWAR, PAKISTAN");
+        
+        certificate_print_text($pdf, $x, $y + 145, 'C', $fontsans, 'B', 14,  "Certificate ID");
+        
+        certificate_print_text($pdf, $x+125, $y + 180, 'C', $fontsans, '', 14,  "Director General PHSA Peshawar");
+        certificate_print_text($pdf, $x+15, $y + 180, 'L', $fontsans, '', 14,  "Project Director");
+        certificate_print_text($pdf, $x+22, $y + 186, 'L', $fontsans, '', 14,  "KP-HCIP");
+        
+        
+        certificate_print_text($pdf, $x, $y + 222, 'C', $fontsans, '', 14,  "Supported By");
+        certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "KHYBER PAKHTUNKHWA HUMAN CAPITAL INVESTMENT PROJECT (HEALTH)");
+        
+        
+        header ("Content-Type: application/pdf");
+        echo $pdf->Output('', 'S');
+                
+                
+            
+        
+    }
+
 }
