@@ -1145,17 +1145,17 @@ class Trainings extends Admin_Controller
         }
     }
     
-    public function print_certificate($training_id, $batch_id, $trainee_id)
-    {
 
-       
-        
-        function certificate_print_text($pdf, $x, $y, $align, $font='freeserif', $style, $size = 10, $text, $width = 0) {
+    function certificate_print_text($pdf, $x, $y, $align, $font, $style, $size, $text, $width = 0) {
             $pdf->setFont($font, $style, $size);
             $pdf->SetXY($x, $y);
             $pdf->writeHTMLCell($width, 0, '', '', $text, 0, 0, 0, true, $align);
         }
-        
+
+    public function print_certificate($training_id, $batch_id, $trainee_id)
+    {
+
+       
         $pdf = new Tc_pdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         
         $pdf->SetCreator(PDF_CREATOR);
@@ -1165,6 +1165,7 @@ class Trainings extends Admin_Controller
         $pdf->setPrintFooter(false);
         $pdf->SetAutoPageBreak(false, 0);
         $pdf->AddPage();
+        
         
             $x = 10;
             $y = 40;
@@ -1214,8 +1215,8 @@ class Trainings extends Admin_Controller
             $pdf->Image($wmark, $wmarkx, $wmarky, $wmarkw, $wmarkh);
         }
         
-            $logox = 160;
-            $logoy = 17;
+            $logox = 165;
+            $logoy = 25;
             $logo = realpath(K_PATH_IMAGES."./watermark.png");
         
         $pdf->SetAlpha(1);
@@ -1224,9 +1225,9 @@ class Trainings extends Admin_Controller
         }
         
         
-        
-            $KPlogox = 27;
-            $KPlogoy = 17;
+        //header to left log
+            $KPlogox = 22;
+            $KPlogoy = 25;
             $KPlogo = realpath(K_PATH_IMAGES."./KPlogo.png");
         
         $pdf->SetAlpha(1);
@@ -1234,7 +1235,7 @@ class Trainings extends Admin_Controller
             $pdf->Image($KPlogo, $KPlogox, $KPlogoy, '22', '');
         }
         
-        
+        //footer logo
             $KPlogox = 93;
             $KPlogoy = 240;
             $KPlogo = realpath(K_PATH_IMAGES."./hcip_logo.png");
@@ -1254,34 +1255,38 @@ class Trainings extends Admin_Controller
             //$pdf->Image($sig, $sigx, $sigy, '', '');
         }
         
-        // Add text
-        certificate_print_text($pdf, $x, $y - 6, 'C', $fontserif, 'B', 13, "HEALTH DEPARTMENT");
-        certificate_print_text($pdf, $x, $y - 12, 'C', $fontserif, 'B', 13, "GOVERNMENT OF KHYBER PAKHTUNKHWA");
+        $query = "SELECT * FROM training_certificates 
+        WHERE training_id = '" . $training_id . "'
+        AND batch_id = '" . $batch_id . "'
+        AND trainee_id = '" . $trainee_id . "' ";
+        $t_cer = $this->db->query($query)->row();
+
         
+        $this->certificate_print_text($pdf, $x, $y - 10, 'C', $fontserif, 'B', 15, $t_cer->certificate_title);
+       
         $pdf->SetTextColor(0, 0, 120);
-        certificate_print_text($pdf, $x, $y, 'C', $fontsans, '', 15, "PROVINCIAL HEALTH SERVICES ACADEMY");
+        $this->certificate_print_text($pdf, $x, $y, 'C', $fontsans, '', 13, $t_cer->certficate_sub_title);
         $pdf->SetTextColor(0, 0, 0);
-        certificate_print_text($pdf, $x, $y + 30, 'C', $fontserif, '', 15, "CERTIFICATE OF ACHIEVEMENT");
-        certificate_print_text($pdf, $x, $y + 40, 'C', $fontserif, '', 14, "AWARDED TO");
-        certificate_print_text($pdf, $x, $y + 51, 'C', $fontsans, '', 30, "Yaseen Muhammad");
-        certificate_print_text($pdf, $x, $y + 67, 'C', $fontserif, '', 14, "ON COMPLETION OF");
+        $this->certificate_print_text($pdf, $x, $y + 30, 'C', $fontserif, '', 15, $t_cer->certificate_for);
+        $this->certificate_print_text($pdf, $x, $y + 40, 'C', $fontserif, '', 14, "AWARDED TO");
+        $this->certificate_print_text($pdf, $x, $y + 51, 'C', $fontsans, '', 20, $t_cer->awarded_to);
+        $this->certificate_print_text($pdf, $x, $y + 67, 'C', $fontserif, '', 14, "ON COMPLETION OF");
         
-        certificate_print_text($pdf, $x, $y + 82, 'C', $fontsans, '', 13, "FOUR MONTHS MANDATORY PROMOTIONAL TRAINING FOR IN-SERVICE MID & SENIOR LEVEL HEALTH MANAGERS");
-        //certificate_print_text($pdf, $x, $y + 72, 'C', $fontsans, '', 20, "the Butt of Many Jokes");
-        certificate_print_text($pdf, $x, $y + 100, 'C', $fontsans, '', 14,  "13th June 1992");
-        //certificate_print_text($pdf, $x, $y + 102, 'C', $fontserif, '', 10, "With a grade of 12%");
-        certificate_print_text($pdf, $x, $y + 112, 'C', $fontserif, '', 10, "AT");
-        certificate_print_text($pdf, $x, $y + 122, 'C', $fontserif, '', 14, "PROVINCIAL HEALTH SERVICES ACADEMY PESHAWAR, PAKISTAN");
-        
-        certificate_print_text($pdf, $x, $y + 145, 'C', $fontsans, 'B', 14,  "Certificate ID");
-        
-        certificate_print_text($pdf, $x+125, $y + 180, 'C', $fontsans, '', 14,  "Director General PHSA Peshawar");
-        certificate_print_text($pdf, $x+15, $y + 180, 'L', $fontsans, '', 14,  "Project Director");
-        certificate_print_text($pdf, $x+22, $y + 186, 'L', $fontsans, '', 14,  "KP-HCIP");
+        $this->certificate_print_text($pdf, $x, $y + 82, 'C', $fontsans, '', 15, $t_cer->training_title);
         
         
-        certificate_print_text($pdf, $x, $y + 222, 'C', $fontsans, '', 14,  "Supported By");
-        certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "KHYBER PAKHTUNKHWA HUMAN CAPITAL INVESTMENT PROJECT (HEALTH)");
+        $this->certificate_print_text($pdf, $x, $y + 128, 'C', $fontsans, '', 14,  date('d M, Y',strtotime($t_cer->created_date)));
+        $this->certificate_print_text($pdf, $x, $y + 136, 'C', $fontserif, '', 10, "AT");
+        $this->certificate_print_text($pdf, $x, $y + 140, 'C', $fontserif, '', 13,  $t_cer->certificate_footer);
+        
+        $this->certificate_print_text($pdf, $x, $y + 155, 'C', $fontsans, 'B', 14,  "Certificate ID: (".$t_cer->certificate_code.")");
+        
+        $this->certificate_print_text($pdf, $x+125, $y + 180, 'C', $fontsans, '', 14,  $t_cer->left_signatory);
+        $this->certificate_print_text($pdf, $x+15, $y + 180, 'L', $fontsans, '', 14,  $t_cer->right_signatory);
+        
+        
+        $this->certificate_print_text($pdf, $x, $y + 222, 'C', $fontsans, '', 14,  "Supported By");
+        $this->certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "KHYBER PAKHTUNKHWA HUMAN CAPITAL INVESTMENT PROJECT (HEALTH)");
         
         
         header ("Content-Type: application/pdf");
