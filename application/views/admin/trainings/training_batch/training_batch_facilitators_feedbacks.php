@@ -16,6 +16,7 @@
         margin: 0px !important;
     }
 </style>
+<h4>Feedback about facilitators:</h4>
 <div class="rating-legend" style="text-align:right">
     Ratings: <span class="poor">1️⃣ (Poor)</span>
     <span class="fair">2️⃣ (Fair)</span>
@@ -51,7 +52,7 @@
                 4 => 'Very Good',
                 5 => 'Excellent'
             );
-                echo $query = "SELECT users.*, training_nominations.nomination_type,  training_nominations.id,
+                $query = "SELECT users.*, training_nominations.nomination_type,  training_nominations.id,
                 COUNT(fe.facilitator_id) AS feedbacks, 
                 AVG(fe.subject_knowledge) AS `subject_knowledge`, 
                 AVG(fe.lecture_contents) AS `lecture_contents`, 
