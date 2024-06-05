@@ -16,6 +16,65 @@
         margin: 0px !important;
     }
 </style>
+<?php 
+$ratings = array(
+    1 => 'Poor',
+    2 => 'Fair',
+    3 => 'Good',
+    4 => 'Very Good',
+    5 => 'Excellent'
+);
+$query="SELECT 
+AVG(trainings_hall_environment) AS trainings_hall_environment, 
+AVG(food) AS food, 
+AVG(hostel) AS hostel,
+AVG(extra_physical_activities) AS extra_physical_activities,
+(AVG(trainings_hall_environment) + AVG(food) + AVG(hostel) + AVG(extra_physical_activities)) / 4 AS avg_rating
+FROM 
+facilities_evaluations
+WHERE batch_id = '" . $batch->batch_id . "'
+AND training_id = '" . $training->training_id."'";
+$faciliteis_rating = $this->db->query($query)->row();
+
+?>
+<h4>Feedback about Facilities:</h4>
+<div class="rating-legend" style="text-align:right">
+    Ratings: <span class="poor">1️⃣ (Poor)</span>
+    <span class="fair">2️⃣ (Fair)</span>
+    <span class="good">3️⃣ (Good)</span>
+    <span class="very-good">4️⃣ (Very Good)</span>
+    <span class="excellent">5️⃣ (Excellent)</span>
+</div>
+        <table class="table table_small" id="db_table2">
+            <thead>
+            <tr>
+                <th>Hall Environment</th>
+                <th>Food</th>
+                <th>Hostel</th>
+                <th>Extra Physical Activities</th>
+                <th>AVG Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+        <td><?php echo round($faciliteis_rating->trainings_hall_environment,2); ?>
+                    <small style="display:block"><?php echo $ratings[round($faciliteis_rating->trainings_hall_environment)]; ?></small>
+                    </td>
+                        <td><?php echo round($faciliteis_rating->food,2); ?>
+                        <small style="display:block"><?php echo $ratings[round($faciliteis_rating->food)]; ?></small>
+                    </td>
+                        <td><?php echo round($faciliteis_rating->hostel,2); ?>
+                        <small style="display:block"><?php echo $ratings[round($faciliteis_rating->hostel)]; ?></small>
+                    </td>
+                        <td><?php echo round($faciliteis_rating->extra_physical_activities,2); ?>
+                        <small style="display:block"><?php echo $ratings[round($faciliteis_rating->extra_physical_activities)]; ?></small>
+                    </td>
+                        <td><?php echo round($faciliteis_rating->avg_rating,2); ?>
+                        <small style="display:block"><?php echo $ratings[round($faciliteis_rating->avg_rating)]; ?></small>
+                    </td>
+        </tbody>
+</table>
+
+
 <h4>Feedback about facilitators:</h4>
 <div class="rating-legend" style="text-align:right">
     Ratings: <span class="poor">1️⃣ (Poor)</span>
@@ -45,13 +104,7 @@
             </thead>
             <tbody>
                 <?php
-            $ratings = array(
-                1 => 'Poor',
-                2 => 'Fair',
-                3 => 'Good',
-                4 => 'Very Good',
-                5 => 'Excellent'
-            );
+            
                 $query = "SELECT users.*, training_nominations.nomination_type,  training_nominations.id,
                 COUNT(fe.facilitator_id) AS feedbacks, 
                 AVG(fe.subject_knowledge) AS `subject_knowledge`, 
@@ -113,6 +166,43 @@
     title = '<?php echo 'T-Code:(' . $training->code . ") - " . $title; ?> Facilitators Feedback List';
     $(document).ready(function() {
         $('#db_table').DataTable({
+            dom: 'Bfrtip',
+            paging: false,
+            title: title,
+            "order": [],
+            "ordering": true,
+            searching: true,
+            buttons: [
+
+                {
+                    extend: 'print',
+                    title: title,
+                    messageTop: '<?php echo $table_title; ?>'
+
+                },
+                {
+                    extend: 'excelHtml5',
+                    title: title,
+                    messageTop: '<?php echo $table_title; ?>'
+
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: title,
+                    pageSize: 'A4',
+                    orientation: 'landscape',
+                    messageTop: '<?php echo $table_title; ?>'
+
+                }
+            ]
+        });
+    });
+</script>
+<script>
+    <?php $table_title = "For Training " . $training->title . "(Code: " . $training->code . ") " . " Batch: " . $title . " " . date('d-m-Y h:m:s'); ?>
+    title = '<?php echo 'T-Code:(' . $training->code . ") - " . $title; ?> Facilities Feedback List';
+    $(document).ready(function() {
+        $('#db_table2').DataTable({
             dom: 'Bfrtip',
             paging: false,
             title: title,
