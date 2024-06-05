@@ -56,21 +56,38 @@ $faciliteis_rating = $this->db->query($query)->row();
             </tr>
         </thead>
         <tbody>
-        <td><?php echo round($faciliteis_rating->trainings_hall_environment,2); ?>
+            <tr>
+        <td>
+        <?php if($faciliteis_rating->trainings_hall_environment>0){ ?>    
+        <?php echo round($faciliteis_rating->trainings_hall_environment,2); ?>
                     <small style="display:block"><?php echo $ratings[round($faciliteis_rating->trainings_hall_environment)]; ?></small>
-                    </td>
-                        <td><?php echo round($faciliteis_rating->food,2); ?>
+      <?php } ?>
+                </td>
+                <td>
+                   <?php if($faciliteis_rating->food>0){ ?>   
+                        <?php echo round($faciliteis_rating->food,2); ?>
                         <small style="display:block"><?php echo $ratings[round($faciliteis_rating->food)]; ?></small>
-                    </td>
-                        <td><?php echo round($faciliteis_rating->hostel,2); ?>
+                   <?php } ?>
+                </td>
+                    <td>
+                    <?php if($faciliteis_rating->hostel>0){ ?> 
+                        <?php echo round($faciliteis_rating->hostel,2); ?>
                         <small style="display:block"><?php echo $ratings[round($faciliteis_rating->hostel)]; ?></small>
+                   <?php } ?>
                     </td>
-                        <td><?php echo round($faciliteis_rating->extra_physical_activities,2); ?>
+                     <td>
+                    <?php if($faciliteis_rating->extra_physical_activities>0){ ?>     
+                        <?php echo round($faciliteis_rating->extra_physical_activities,2); ?>
                         <small style="display:block"><?php echo $ratings[round($faciliteis_rating->extra_physical_activities)]; ?></small>
+                   <?php } ?>
                     </td>
-                        <td><?php echo round($faciliteis_rating->avg_rating,2); ?>
+                    <td>
+                    <?php if($faciliteis_rating->avg_rating>0){ ?> 
+                        <?php echo round($faciliteis_rating->avg_rating,2); ?>
                         <small style="display:block"><?php echo $ratings[round($faciliteis_rating->avg_rating)]; ?></small>
+                    <?php } ?>
                     </td>
+                    </tr>
         </tbody>
 </table>
 
@@ -133,13 +150,18 @@ $faciliteis_rating = $this->db->query($query)->row();
                         <td><?php echo $facilitator->district; ?></td>
                         <td><?php echo $facilitator->qualification; ?></td>
                         <td><?php echo $facilitator->user_mobile_number; ?></td>
-                        <td><?php echo $facilitator->qualification; ?></td>
                         <td><?php echo round($facilitator->subject_knowledge,2); ?>
                     <small style="display:block"><?php echo $ratings[round($facilitator->subject_knowledge)]; ?></small>
                     </td>
                         <td><?php echo round($facilitator->lecture_contents,2); ?>
                         <small style="display:block"><?php echo $ratings[round($facilitator->lecture_contents)]; ?></small>
+                   
                     </td>
+
+                    <td><?php echo round($facilitator->teaching_methodology,2); ?>
+                        <small style="display:block"><?php echo $ratings[round($facilitator->teaching_methodology)]; ?></small>
+                    </td>
+
                         <td><?php echo round($facilitator->time_utilization,2); ?>
                         <small style="display:block"><?php echo $ratings[round($facilitator->time_utilization)]; ?></small>
                     </td>
