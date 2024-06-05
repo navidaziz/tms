@@ -51,7 +51,7 @@
                 4 => 'Very Good',
                 5 => 'Excellent'
             );
-                $query = "SELECT users.*, training_nominations.nomination_type,  training_nominations.id,
+                echo $query = "SELECT users.*, training_nominations.nomination_type,  training_nominations.id,
                 COUNT(fe.facilitator_id) AS feedbacks, 
                 AVG(fe.subject_knowledge) AS `subject_knowledge`, 
                 AVG(fe.lecture_contents) AS `lecture_contents`, 
@@ -65,7 +65,8 @@
                                             INNER JOIN facilitator_evaluations fe ON(fe.facilitator_id = users.user_id)
                                             WHERE training_nominations.batch_id = " . $batch->batch_id . "
                                             AND training_nominations.nomination_type = 'Facilitator'
-                                            AND training_nominations.training_id = " . $training->training_id;
+                                            AND training_nominations.training_id = " . $training->training_id.'
+                                            GROUP BY fe.facilitator_id';
                 $facilitators = $this->db->query($query)->result();
                 $count = 1;
                 foreach ($facilitators as $facilitator) : ?>
