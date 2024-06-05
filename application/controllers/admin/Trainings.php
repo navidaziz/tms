@@ -1131,7 +1131,7 @@ class Trainings extends Admin_Controller
 
 
 
-            $inputs['training_title'] = $training_title."<br />".$batch->batch_title.'  ( From '.date('d M, Y', strtotime($batch->batch_start_date)).' to '.date('d M, Y', strtotime($batch->batch_start_date)).' )';
+            $inputs['training_title'] = $training_title."<br />".$batch->batch_title.'  ( From '.date('d M, Y', strtotime($batch->batch_start_date)).' to '.date('d M, Y', strtotime($batch->batch_end_date)).' )';
             $inputs['certificate_footer'] = $template->certificate_footer;
             $inputs['left_signatory'] = $template->left_signatory;
             $inputs['right_signatory'] = $template->right_signatory;
@@ -1282,7 +1282,7 @@ class Trainings extends Admin_Controller
         $this->certificate_print_text($pdf, $x, $y + 82, 'C', $fontsans, '', 15, $t_cer->training_title);
         
         
-        $this->certificate_print_text($pdf, $x, $y + 128, 'C', $fontsans, '', 14,  date('d M, Y',strtotime($t_cer->created_date)));
+        $this->certificate_print_text($pdf, $x, $y + 128, 'C', $fontsans, '', 14,  'Issue Date: '.date('d M, Y',strtotime($t_cer->created_date)));
         $this->certificate_print_text($pdf, $x, $y + 136, 'C', $fontserif, '', 10, "AT");
         $this->certificate_print_text($pdf, $x, $y + 140, 'C', $fontserif, '', 13,  $t_cer->certificate_footer);
         
