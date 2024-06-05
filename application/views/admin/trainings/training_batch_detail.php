@@ -55,7 +55,11 @@
             <div class="box-body">
                 <div class="tabbable header-tabs">
                     <ul class="nav nav-tabs">
-
+                    <li <?php if ($tab == 'feedbacks') { ?>class="active" <?php } ?>>
+                            <a href="<?php echo site_url(ADMIN_DIR . 'trainings/training_batch/' . $training_id . '/' . $batch_id . '?tab=feedbacks') ?>">
+                                <i class="fa fa-comments-o" aria-hidden="true"></i>
+                                <span class="hidden-inline-mobile">Training Feedbacks</span></a>
+                        </li>
                         <li <?php if ($tab == 'test_result') { ?>class="active" <?php } ?>>
                             <a href="<?php echo site_url(ADMIN_DIR . 'trainings/training_batch/' . $training_id . '/' . $batch_id . '?tab=test_result') ?>">
                                 <i class="fa fa-check" aria-hidden="true"></i>
@@ -81,6 +85,7 @@
                                 <i class="fa fa-user" aria-hidden="true"></i>
                                 <span class="hidden-inline-mobile">Facilitators</span></a>
                         </li>
+                       
 
                     </ul>
 
@@ -100,6 +105,10 @@
                         <?php if ($tab == 'test_result') { ?>
                             <?php $this->load->view(ADMIN_DIR . "trainings/training_batch/training_batch_test_results", $this->data); ?>
                         <?php } ?>
+                        <?php if ($tab == 'feedbacks') { ?>
+                            <?php $this->load->view(ADMIN_DIR . "trainings/training_batch/training_batch_facilitators_feedbacks", $this->data); ?>
+                        <?php } ?>
+                        
 
                     </div>
                 </div>
