@@ -1103,6 +1103,10 @@ class Trainings extends Admin_Controller
             $query = "SELECT * FROM templates WHERE department_id = ?";
             $template = $this->db->query($query, array($training->department_id))->row();
 
+
+            $query = "SELECT * FROM training_batches WHERE batch_id = ? and training_id = ?";
+            $batch = $this->db->query($query, array($batch_id, $training_id))->row();
+
             //create certificate ....
 
             $inputs = array();
@@ -1124,7 +1128,10 @@ class Trainings extends Admin_Controller
             $inputs['awarded_to'] = $awarded_to;
 
             $training_title = $training->title;
-            $inputs['training_title'] = $training_title;
+
+
+
+            $inputs['training_title'] = $training_title."<br />".$batch->batch_title.'  ( From '.date('d M, Y', strtotime($batch->batch_start_date)).' to '.date('d M, Y', strtotime($batch->batch_start_date)).' )';
             $inputs['certificate_footer'] = $template->certificate_footer;
             $inputs['left_signatory'] = $template->left_signatory;
             $inputs['right_signatory'] = $template->right_signatory;
