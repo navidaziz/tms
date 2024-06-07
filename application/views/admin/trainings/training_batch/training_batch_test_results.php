@@ -127,15 +127,15 @@
                                                                         AND trainee_id = " . $nomination->user_id . "";
                         $summary = $this->db->query($query)->row(); ?>
                         <td><?php echo $post_test =  $summary->total; ?></td>
-                        <td><?php echo $summary->wrong_ans; ?></td>
-                        <td><?php echo $summary->correct_ans; ?></td>
+                        <td><?php echo $pt_wrong_ans = $summary->wrong_ans; ?></td>
+                        <td><?php echo $pt_correct_ans = $summary->correct_ans; ?></td>
                         <td><?php
                             if ($summary->total) {
                                 echo @round(($summary->correct_ans * 100) / $summary->total, 2) . " %";
                             }
                             ?></td>
                         <td>
-                            <?php if ($pre_test > 0 and $post_test > 0 and $pre_test == $post_test) { ?>
+                            <?php if ($pt_wrong_ans > 0 and $pt_correct_ans > 0 and $post_test==($pt_wrong_ans+$pt_correct_ans)) { ?>
                                 <?php
 
                                 $query = "SELECT COUNT(*) as total FROM training_certificates 
