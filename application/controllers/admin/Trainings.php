@@ -1298,7 +1298,7 @@ class Trainings extends Admin_Controller
         
         header ("Content-Type: application/pdf");
 		
-		$pdf->Output($t_cer->cnic.'.pdf', 'I');	
+		echo $pdf->Output($t_cer->cnic.'.pdf', 'I');	
        // echo $pdf->Output('', 'D');
                 
                 
