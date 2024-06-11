@@ -1262,10 +1262,10 @@ class Trainings extends Admin_Controller
             //$pdf->Image($sig, $sigx, $sigy, '', '');
         }
         
-        $query = "SELECT * FROM training_certificates 
-        WHERE training_id = '" . $training_id . "'
-        AND batch_id = '" . $batch_id . "'
-        AND trainee_id = '" . $trainee_id . "' ";
+        $query = "SELECT training_certificates.*,training_batches.batch_start_date,training_batches.batch_end_date FROM `training_certificates` inner join training_batches on training_certificates.batch_id=training_batches.batch_id 
+        WHERE training_certificates.training_id = '" . $training_id . "'
+        AND training_certificates.batch_id = '" . $batch_id . "'
+        AND training_certificates.trainee_id = '" . $trainee_id . "' ";
         $t_cer = $this->db->query($query)->row();
 
         
@@ -1282,7 +1282,7 @@ class Trainings extends Admin_Controller
         $this->certificate_print_text($pdf, $x, $y + 82, 'C', $fontsans, '', 15, $t_cer->training_title);
         
         
-        $this->certificate_print_text($pdf, $x, $y + 128, 'C', $fontsans, '', 14,  'Issue Date: '.date('d M, Y',strtotime($t_cer->created_date)));
+        $this->certificate_print_text($pdf, $x, $y + 128, 'C', $fontsans, '', 14,  'Issue Date: '.date('d M, Y',strtotime($t_cer->batch_end_date)));
         $this->certificate_print_text($pdf, $x, $y + 136, 'C', $fontserif, '', 10, "AT");
         $this->certificate_print_text($pdf, $x, $y + 140, 'C', $fontserif, '', 13,  $t_cer->certificate_footer);
         
@@ -1292,12 +1292,12 @@ class Trainings extends Admin_Controller
         $this->certificate_print_text($pdf, $x+15, $y + 180, 'L', $fontsans, '', 14,  $t_cer->right_signatory);
         
         
-        $this->certificate_print_text($pdf, $x, $y + 222, 'C', $fontsans, '', 14,  "Supported By");
+        $this->certificate_print_text($pdf, $x, $y + 222, 'C', $fontsans, '', 14,  "Supported by");
         $this->certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "KHYBER PAKHTUNKHWA HUMAN CAPITAL INVESTMENT PROJECT (HEALTH)");
         
         
         header ("Content-Type: application/pdf");
-        echo $pdf->Output('', 'S');
+        echo $pdf->Output('', 'D');
                 
                 
             
