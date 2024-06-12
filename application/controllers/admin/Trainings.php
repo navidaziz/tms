@@ -475,7 +475,8 @@ class Trainings extends Admin_Controller
                     'user_mobile_number' => $this->input->post('user_mobile_number'),
                     'user_name' => $this->input->post('cnic'),
                     'user_password' => '123456',
-                    'biometric_id' => $this->input->post('biometric_id')
+                    'biometric_id' => $this->input->post('biometric_id'),
+					'duty_station' => $this->input->post('duty_station')
                 );
 
                 if ($this->input->post('nomination_type') == 'resource_person') {
