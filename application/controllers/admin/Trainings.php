@@ -117,6 +117,7 @@ class Trainings extends Admin_Controller
     //---------------------------------------------------------------------------
 
     /**
+
      * function to draft training from trash
      * @param $training_id integer
      */
@@ -1250,7 +1251,7 @@ class Trainings extends Admin_Controller
         
         $pdf->SetAlpha(1);
         if (file_exists($KPlogo)) {
-            $pdf->Image($KPlogo, $KPlogox, $KPlogoy, '22', '');
+            //$pdf->Image($KPlogo, $KPlogox, $KPlogoy, '22', '');
         }
         
         
@@ -1294,7 +1295,8 @@ class Trainings extends Admin_Controller
         
         
         $this->certificate_print_text($pdf, $x, $y + 222, 'C', $fontsans, '', 14,  "Supported by");
-        $this->certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "KHYBER PAKHTUNKHWA HUMAN CAPITAL INVESTMENT PROJECT (HEALTH)");
+    //    $this->certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "KHYBER PAKHTUNKHWA HUMAN CAPITAL INVESTMENT PROJECT (HEALTH)");
+    $this->certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "GOVERNMENT OF KHYBER PAKHTUNKHWA");
         
         
         header ("Content-Type: application/pdf");
