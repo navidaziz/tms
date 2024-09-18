@@ -1305,7 +1305,7 @@ class Trainings extends Admin_Controller
        echo $pdf->Output('', 'I');
                 
                 
-            
+       ///yn     
         
     }
 
