@@ -71,9 +71,13 @@
                 $edit_form_attr = array("class" => "form-horizontal");
                 echo form_open_multipart(ADMIN_DIR."trainings/update_data/$training->training_id", $edit_form_attr);
             ?>
-            <?php echo form_hidden("training_id", $training->training_id); ?>
+            <?php echo form_hidden("training_id", $training->training_id);
+			
+			
+			
+			//print_r($training); die; ?>
 
-            <input type="hidden" name="department_id" value="<?php echo $training->training_id; ?>" />
+            <input type="hidden" name="department_id" value="<?php echo $training->department_id; ?>" />
             
             <div class="form-group">
             

@@ -1,5 +1,11 @@
 <div class="col-md-12">
     <div class="table-responsive" style="overflow-y: auto;">
+    
+     
+        <div style="text-align: right;">
+            <button onclick="get_nomination_list('Trainee')" class="btn btn-warning btn-sm" style="padding: 2px 10px; font-size:11px;">Add Trainees</button>
+        </div>
+      <br />
 
         <table class="table" id="db_table">
             <thead>

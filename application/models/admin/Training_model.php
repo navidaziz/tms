@@ -128,6 +128,7 @@ class Training_model extends MY_Model
     {
         $inputs = array();
         $inputs["department_id"]  =  $this->input->post("department_id");
+		//$inputs["department_id"]  = 1;
 
         $inputs["code"]  =  $this->input->post("code");
 

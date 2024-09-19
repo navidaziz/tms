@@ -238,6 +238,7 @@ class Trainings extends Admin_Controller
     {
         $training_id = (int) $training_id;
         $this->data["training"] = $this->training_model->get($training_id);
+		//echo $this->db->last_query();
 
         $this->data["title"] = $this->lang->line('Edit Training');
         $this->data["view"] = ADMIN_DIR . "trainings/edit_training";
