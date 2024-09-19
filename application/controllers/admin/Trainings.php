@@ -1176,6 +1176,13 @@ class Trainings extends Admin_Controller
         $pdf->SetAutoPageBreak(false, 0);
         $pdf->AddPage();
         
+		
+				    $query = "SELECT training_certificates.*,training_batches.batch_start_date,training_batches.batch_end_date FROM `training_certificates` inner join training_batches on training_certificates.batch_id=training_batches.batch_id 
+        WHERE training_certificates.training_id = '" . $training_id . "'
+        AND training_certificates.batch_id = '" . $batch_id . "'
+        AND training_certificates.trainee_id = '" . $trainee_id . "' ";
+        $t_cer = $this->db->query($query)->row();
+
         
             $x = 10;
             $y = 40;
@@ -1218,6 +1225,9 @@ class Trainings extends Admin_Controller
         $pdf->SetLineStyle(array('width' => 1.0, 'color' => array(128,128,128)));
         $pdf->Rect(16, 16, 178, 265);
         
+		
+		
+		
         
         // Set alpha to semi-transparency
         if (file_exists($wmark)) {
@@ -1251,8 +1261,10 @@ class Trainings extends Admin_Controller
             $KPlogo = realpath(K_PATH_IMAGES."./hcip_logo.png");
         
         $pdf->SetAlpha(1);
+		
+		
         if (file_exists($KPlogo)) {
-            //$pdf->Image($KPlogo, $KPlogox, $KPlogoy, '22', '');
+            $pdf->Image($KPlogo, $KPlogox, $KPlogoy, '22', '');
         }
         
         
@@ -1265,11 +1277,7 @@ class Trainings extends Admin_Controller
             //$pdf->Image($sig, $sigx, $sigy, '', '');
         }
         
-        $query = "SELECT training_certificates.*,training_batches.batch_start_date,training_batches.batch_end_date FROM `training_certificates` inner join training_batches on training_certificates.batch_id=training_batches.batch_id 
-        WHERE training_certificates.training_id = '" . $training_id . "'
-        AND training_certificates.batch_id = '" . $batch_id . "'
-        AND training_certificates.trainee_id = '" . $trainee_id . "' ";
-        $t_cer = $this->db->query($query)->row();
+    
 
         
         $this->certificate_print_text($pdf, $x, $y - 10, 'C', $fontserif, 'B', 15, $t_cer->certificate_title);
@@ -1296,10 +1304,16 @@ class Trainings extends Admin_Controller
         
         
         $this->certificate_print_text($pdf, $x, $y + 222, 'C', $fontsans, '', 14,  "Supported by");
-    //    $this->certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "KHYBER PAKHTUNKHWA HUMAN CAPITAL INVESTMENT PROJECT (HEALTH)");
+	
+	   
+	   if($t_cer->department_id==1){
     $this->certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "GOVERNMENT OF KHYBER PAKHTUNKHWA");
         
-        
+	   }
+	   
+	   	if($t_cer->department_id==2){
+       $this->certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "KHYBER PAKHTUNKHWA HUMAN CAPITAL INVESTMENT PROJECT (HEALTH)");}
+	   
         header ("Content-Type: application/pdf");
 		
 		//echo $pdf->Output($t_cer->cnic.'.pdf', 'I');	
