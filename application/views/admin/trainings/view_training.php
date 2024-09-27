@@ -208,7 +208,7 @@
                               <td><?php echo $batch->batch_title; ?></td>
                               <td><strong><?php echo date('D j M Y', strtotime($batch->batch_start_date)); ?></strong></td>
                               <td><strong><?php echo date('D j M Y', strtotime($batch->batch_end_date)); ?>
-                                </stron></td>
+                                </strong></td>
                               <td><?php echo $batch->location; ?></td>
                               <td><smal><i class="fa fa-info pop-hover" data-title="Detail" data-content="<?php echo $batch->batch_detail; ?>" data-original-title="" title="" aria-hidden="true"></i></smal></td>
                               <td style="text-align: center;"><?php
@@ -216,7 +216,7 @@
                                                                     echo $this->db->query($query)->row()->total;
                                                                     ?></td>
                               <td style="text-align: center;"><?php
-                                                                    $query = "SELECT COUNT(*) as total FROM training_nominations WHERE batch_id='" . $batch->batch_id . "'";
+                                                                    $query = "SELECT COUNT(*) as total FROM training_nominations WHERE training_nominations.nomination_type = 'Trainee' and batch_id='" . $batch->batch_id . "'";
                                                                     echo $this->db->query($query)->row()->total;
                                                                     ?></td>
                               <td><?php if ($batch->status == 2) { ?>
