@@ -1256,17 +1256,24 @@ class Trainings extends Admin_Controller
         }
         
         //footer logo
-            $KPlogox = 93;
-            $KPlogoy = 240;
-            $KPlogo = realpath(K_PATH_IMAGES."./hcip_logo.png");
+            $KPlogox_hcip = 93;
+            $KPlogoy_hcip = 240;
+            $KPlogo_hcip = realpath(K_PATH_IMAGES."./hcip_logo.png");
         
         $pdf->SetAlpha(1);
 		
-		
+			if($t_cer->department_id==2){
         if (file_exists($KPlogo)) {
-            $pdf->Image($KPlogo, $KPlogox, $KPlogoy, '22', '');
+            $pdf->Image($KPlogo_hcip, $KPlogox_hcip, $KPlogoy_hcip, '22', '');
         }
-        
+			}
+			
+		if($t_cer->department_id==1){
+         $pdf->SetAlpha(1);
+        if (file_exists($KPlogo)) {
+            $pdf->Image($KPlogo, $KPlogox_hcip, $KPlogoy_hcip, '22', '');
+        }
+			}
         
         
         $pdf->SetAlpha(1);
@@ -1303,7 +1310,7 @@ class Trainings extends Admin_Controller
         $this->certificate_print_text($pdf, $x+15, $y + 180, 'L', $fontsans, '', 14,  $t_cer->right_signatory);
         
         
-        $this->certificate_print_text($pdf, $x, $y + 222, 'C', $fontsans, '', 14,  "Supported by");
+       
 	
 	   
 	   if($t_cer->department_id==1){
@@ -1312,6 +1319,7 @@ class Trainings extends Admin_Controller
 	   }
 	   
 	   	if($t_cer->department_id==2){
+			 $this->certificate_print_text($pdf, $x, $y + 222, 'C', $fontsans, '', 14,  "Supported by");
        $this->certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "KHYBER PAKHTUNKHWA HUMAN CAPITAL INVESTMENT PROJECT (HEALTH)");}
 	   
         header ("Content-Type: application/pdf");
