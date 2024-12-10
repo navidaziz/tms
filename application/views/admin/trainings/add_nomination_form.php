@@ -1,23 +1,21 @@
 <div class="modal-header">
-    <h5 style="display: inline;" class="modal-title" id="g_modal_title"><?php echo $title; ?></h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
+  <h5 style="display: inline;" class="modal-title" id="g_modal_title"><?php echo $title; ?></h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
 </div>
 <div class="modal-body">
-    <form id="nomination_form" method="post">
-        <input name="training_id" type="hidden" value="<?php echo $training_id ?>" />
-        <input name="nomination_type" type="hidden" value="<?php echo $nomination_type ?>" />
-        <div class="form-group row">
-            <label for="cnic" class="col-sm-4 col-form-label">CNIC</label>
-            <div class="col-sm-5">
-                <input id="user_id" type="hidden" value="" name="user_id" />
-                <input type="text" id="cnic" pattern="\d{5}-\d{7}-\d{1}" required onKeyUp="nic_dash1(this)" class="form-control" name="cnic" placeholder="CNIC">
-                <div id="message"></div>
-            </div>
-            <div class="col-sm-3">
-                <button onclick="check_cnic(event)" class="btn btn-success btn-sm">Check CNIC</button>
-                <script>
+  <form id="nomination_form" method="post">
+    <input name="training_id" type="hidden" value="<?php echo $training_id ?>" />
+    <input name="nomination_type" type="hidden" value="<?php echo $nomination_type ?>" />
+    <div class="form-group row">
+      <label for="cnic" class="col-sm-4 col-form-label">CNIC</label>
+      <div class="col-sm-5">
+        <input id="user_id" type="hidden" value="" name="user_id" />
+        <input type="text" id="cnic" pattern="\d{5}-\d{7}-\d{1}" required onKeyUp="nic_dash1(this)" class="form-control" name="cnic" placeholder="CNIC">
+        <div id="message"></div>
+      </div>
+      <div class="col-sm-3">
+        <button onclick="check_cnic(event)" class="btn btn-success btn-sm">Check CNIC</button>
+        <script>
                     function check_cnic(event) {
                         $('#message').html('');
                         event.preventDefault();
@@ -62,66 +60,65 @@
 
                         });
                     }
-                </script>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="biometric_id" class="col-sm-4 col-form-label">Biometric ID</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control" id="biometric_id" name="biometric_id" placeholder="Biometric ID">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="name" class="col-sm-4 col-form-label">Name</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control" id="name" name="name" placeholder="Name">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="father_name" class="col-sm-4 col-form-label">Father Name</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control" id="father_name" name="father_name" placeholder="Father Name">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="father_name" class="col-sm-4 col-form-label">Gender</label>
-            <div class="col-sm-8">
-                <input required type="radio" id="male" name="gender" value="Male"> Male
-                <span style="margin: 5px;"></span>
-                <input required type="radio" id="female" name="gender" value="Female"> Female
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="qualification" class="col-sm-4 col-form-label">Highest Qualification</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control" id="qualification" name="qualification" placeholder="Qualification">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="department" class="col-sm-4 col-form-label">Department</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control" id="department" name="department" placeholder="Department">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="duty_station" class="col-sm-4 col-form-label">Duty Station</label>
-            <div class="col-sm-8">
-                <input required type="text" class="form-control" id="duty_station" name="duty_station" placeholder="Duty Station">
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="designation" class="col-sm-4 col-form-label">Designation</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control" id="designation" name="designation" placeholder="Designation">
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label for="mobile_no" class="col-sm-4 col-form-label">Mobile Number</label>
-            <div class="col-sm-8">
-                <input onfocus="addCountryCode()" minlength="13" maxlength="13" onkeydown="addCountryCode()" type="phone" class="form-control" id="user_mobile_number" name="user_mobile_number" placeholder="Mobile Number">
-            </div>
-            <script>
+                </script> 
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="biometric_id" class="col-sm-4 col-form-label">Biometric ID</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" id="biometric_id" name="biometric_id" placeholder="Biometric ID">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="name" class="col-sm-4 col-form-label">Name</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" id="name" name="name" placeholder="Name">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="father_name" class="col-sm-4 col-form-label">Father Name</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" id="father_name" name="father_name" placeholder="Father Name">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="father_name" class="col-sm-4 col-form-label">Gender</label>
+      <div class="col-sm-8">
+        <input required type="radio" id="male" name="gender" value="Male">
+        Male <span style="margin: 5px;"></span>
+        <input required type="radio" id="female" name="gender" value="Female">
+        Female </div>
+    </div>
+    <div class="form-group row">
+      <label for="qualification" class="col-sm-4 col-form-label">Highest Qualification</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" id="qualification" name="qualification" placeholder="Qualification">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="department" class="col-sm-4 col-form-label">Department</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" id="department" name="department" placeholder="Department">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="duty_station" class="col-sm-4 col-form-label">Duty Station</label>
+      <div class="col-sm-8">
+        <input required type="text" class="form-control" id="duty_station" name="duty_station" placeholder="Duty Station">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="designation" class="col-sm-4 col-form-label">Designation</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" id="designation" name="designation" placeholder="Designation">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="mobile_no" class="col-sm-4 col-form-label">Mobile Number</label>
+      <div class="col-sm-8">
+        <input onfocus="addCountryCode()" minlength="13" maxlength="13" onkeydown="addCountryCode()" type="phone" class="form-control" id="user_mobile_number" name="user_mobile_number" placeholder="Mobile Number">
+      </div>
+      <script>
                 function addCountryCode() {
                     var mobileNumberInput = document.getElementById('user_mobile_number');
                     // Check if the input doesn't already start with '+923'
@@ -129,77 +126,69 @@
                         mobileNumberInput.value = '+923' + mobileNumberInput.value;
                     }
                 }
-            </script>
-        </div>
-        
-         
-           <?php
+            </script> 
+    </div>
+    <?php
             $user_id = $this->session->userdata('userId');
             $query = "SELECT * from districts";
             $districts = $this->db->query($query)->result();
 			
 		//	print_r($districts); die;
            ?>
-        <div class="form-group row">
-            <label for="district" class="col-sm-4 col-form-label">District of Domicile</label>
-            <div class="col-sm-8">
-                
-                
-                        <select class="form-control" title="district" name="district">
-<?php foreach ($districts as $district) {
+    <div class="form-group row">
+      <label for="district" class="col-sm-4 col-form-label">District of Domicile</label>
+      <div class="col-sm-8">
+        <select class="form-control" title="district" name="district">
+          <?php foreach ($districts as $district) {
 	
 	//print_r($district->district_name); die;
 	 ?>
-  <option value="<?php $district->district_name; ?>">
-    <?php echo $district->district_name; ?>
-  </option>
-<?php } ?>
-</select>
-            </div>
-        </div>
-        
-        
-       
-          <div class="form-group row">
-            <label for="duty_district" class="col-sm-4 col-form-label">duty_district</label>
-             <div class="col-sm-8">
+          <option value="<?php echo $district->district_name; ?>"> <?php echo $district->district_name; ?> </option>
+          <?php } ?>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="duty_district" class="col-sm-4 col-form-label">duty_district</label>
+      <div class="col-sm-8">
         <select class="form-control" title="duty_district" name="duty_district">
-<?php foreach ($districts as $district) {
+          <?php foreach ($districts as $district) {
 	
 	//print_r($district->district_name); die;
 	 ?>
-  <option value="<?php $district->district_id; ?>">
-    <?php echo $district->district_name; ?>
-  </option>
-<?php } ?>
-</select>
-</div></div>
-        
-        <div class="form-group row">
-            <label for="address" class="col-sm-4 col-form-label">Address</label>
-            <div class="col-sm-8">
-                <input type="text" class="form-control" id="address" name="address" placeholder="Address">
-            </div>
-        </div>
-        <div class="form-group row">
-            <div style="text-align: center;">Do you want to nominate as (<?php
+          <option value="<?php echo $district->district_id; ?>"> <?php echo $district->district_name; ?> </option>
+          <?php } ?>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="address" class="col-sm-4 col-form-label">Address</label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" id="address" name="address" placeholder="Address">
+      </div>
+    </div>
+    <div class="form-group row">
+      <div style="text-align: center;">Do you want to nominate as (
+        <?php
                                                                             if ($nomination_type == 'resource_person') {
                                                                                 echo 'Facilitator';
                                                                             }
                                                                             if ($nomination_type == 'trainee') {
                                                                                 echo 'Trainee';
                                                                             }
-                                                                            ?>) for this training? <input required type="radio" name="nomination" value="Yes" /> Yes
-                <span required style="margin: 10px;"></span> <input type="radio" name="nomination" value="No" /> No
-            </div>
-        </div>
-        <div id="message_form"></div>
-        <div style="text-align: center;">
-            <button class="btn btn-primary btn-sm" type="submit"><?php echo $title; ?></button>
-        </div>
-
-    </form>
-    <script>
+                                                                            ?>
+        ) for this training?
+        <input required type="radio" name="nomination" value="Yes" />
+        Yes <span required style="margin: 10px;"></span>
+        <input type="radio" name="nomination" value="No" />
+        No </div>
+    </div>
+    <div id="message_form"></div>
+    <div style="text-align: center;">
+      <button class="btn btn-primary btn-sm" type="submit"><?php echo $title; ?></button>
+    </div>
+  </form>
+  <script>
         $('#nomination_form').submit(function(e) {
             e.preventDefault();
             var formData = $(this).serialize();
@@ -241,5 +230,5 @@
                 }
             });
         });
-    </script>
+    </script> 
 </div>

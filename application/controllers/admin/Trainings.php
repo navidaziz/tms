@@ -425,6 +425,8 @@ class Trainings extends Admin_Controller
         $this->form_validation->set_rules('duty_station', 'Duty Station', 'required');
 		 $this->form_validation->set_rules('duty_district', 'duty_district', 'required');
 
+//print_r($this->input->post());
+
         if ($this->form_validation->run() == false) {
             // Validation failed
             $data['error'] = validation_errors();
