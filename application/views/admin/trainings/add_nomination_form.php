@@ -131,12 +131,50 @@
                 }
             </script>
         </div>
+        
+         
+           <?php
+            $user_id = $this->session->userdata('userId');
+            $query = "SELECT * from districts";
+            $districts = $this->db->query($query)->result();
+			
+		//	print_r($districts); die;
+           ?>
         <div class="form-group row">
-            <label for="district" class="col-sm-4 col-form-label">District</label>
+            <label for="district" class="col-sm-4 col-form-label">District of Domicile</label>
             <div class="col-sm-8">
-                <input type="text" class="form-control" id="district" name="district" placeholder="District">
+                
+                
+                        <select class="form-control" title="district" name="district">
+<?php foreach ($districts as $district) {
+	
+	//print_r($district->district_name); die;
+	 ?>
+  <option value="<?php $district->district_name; ?>">
+    <?php echo $district->district_name; ?>
+  </option>
+<?php } ?>
+</select>
             </div>
         </div>
+        
+        
+       
+          <div class="form-group row">
+            <label for="duty_district" class="col-sm-4 col-form-label">duty_district</label>
+             <div class="col-sm-8">
+        <select class="form-control" title="duty_district" name="duty_district">
+<?php foreach ($districts as $district) {
+	
+	//print_r($district->district_name); die;
+	 ?>
+  <option value="<?php $district->district_id; ?>">
+    <?php echo $district->district_name; ?>
+  </option>
+<?php } ?>
+</select>
+</div></div>
+        
         <div class="form-group row">
             <label for="address" class="col-sm-4 col-form-label">Address</label>
             <div class="col-sm-8">

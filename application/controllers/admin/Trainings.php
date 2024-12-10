@@ -423,6 +423,7 @@ class Trainings extends Admin_Controller
         $this->form_validation->set_rules('nomination', 'Nomination', 'required');
         $this->form_validation->set_rules('user_mobile_number', 'User Mobile Number', 'required|numeric');
         $this->form_validation->set_rules('duty_station', 'Duty Station', 'required');
+		 $this->form_validation->set_rules('duty_district', 'duty_district', 'required');
 
         if ($this->form_validation->run() == false) {
             // Validation failed
@@ -446,6 +447,7 @@ class Trainings extends Admin_Controller
                     'user_name' => $this->input->post('cnic'),
                     'user_password' => $this->input->post('user_password'),
                     'biometric_id' => $this->input->post('biometric_id'),
+					'duty_district' => $this->input->post('duty_district'),
                     'duty_station' => $this->input->post('duty_station')
                 );
                 if ($this->input->post('nomination_type') == 'resource_person') {
@@ -478,6 +480,7 @@ class Trainings extends Admin_Controller
                     'user_name' => $this->input->post('cnic'),
                     'user_password' => '123456',
                     'biometric_id' => $this->input->post('biometric_id'),
+					'duty_district' => $this->input->post('duty_district'),
 					'duty_station' => $this->input->post('duty_station')
                 );
 
