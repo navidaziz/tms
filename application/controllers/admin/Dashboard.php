@@ -57,24 +57,24 @@ FROM
     (
         (
             (
-                `tms_db`.`trainings`
-            JOIN `tms_db`.`training_nominations` ON
+                `trainings`
+            JOIN `training_nominations` ON
                 (
-                    `tms_db`.`training_nominations`.`training_id` = `tms_db`.`trainings`.`training_id`
+                    `training_nominations`.`training_id` = `trainings`.`training_id`
                 )
             )
-        JOIN `tms_db`.`users` ON
+        JOIN `users` ON
             (
-                `tms_db`.`users`.`user_id` = `tms_db`.`training_nominations`.`user_id`
+                `users`.`user_id` = `training_nominations`.`user_id`
             )
         )
-    JOIN `tms_db`.`training_batches` ON
+    JOIN `training_batches` ON
         (
-            `tms_db`.`training_nominations`.`batch_id` = `tms_db`.`training_batches`.`batch_id`
+            `training_nominations`.`batch_id` = `training_batches`.`batch_id`
         )
     )
 WHERE
-   `tms_db`.`training_nominations`.`nomination_type` IN("Trainee", "Facilitator")
+   `training_nominations`.`nomination_type` IN("Trainee", "Facilitator")
 GROUP BY
 trainings.training_id order by trainings.department_id ASC';
         $department = $this->db->query($query)->result();
