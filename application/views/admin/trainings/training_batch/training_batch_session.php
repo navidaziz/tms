@@ -61,13 +61,16 @@
                     </td>
                 </tr>
             </table>
+            
 
         <?php
 
             $currentDate->modify('+1 day');
         }
         ?>
-
+<div style="text-align:center">
+                <a target="new" class="btn btn-warning btn-sm"  href="<?php echo site_url(ADMIN_DIR . "trainings/print_training_batch_schedule/" . $batch_session->training_id . "/" . $batch_session->batch_id); ?>" ><i class="fa fa-print" aria-hidden="true"></i> Day Wise Sessions and Schedule</a>
+            </div>
 
 
         <script>

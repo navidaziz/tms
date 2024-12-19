@@ -1383,7 +1383,26 @@ class Trainings extends Admin_Controller
                         
                     echo "success";
                 }
-            }        
+            }   
+           
+    public function print_training_batch_schedule($training_id,$batch_id){
+        $training_id = (int) $training_id;
+        $batch_id = (int) $batch_id;
+        
+        $training_id = (int) $training_id;
+        $this->data['training_id'] = $training_id;
+        $this->data["training"] = $training = $this->training_model->get($training_id);
+
+        $this->data['batch_id'] = $batch_id;
+        $query = "SELECT * FROM training_batches 
+        WHERE training_id = $training_id 
+        AND batch_id = $batch_id";
+        $this->data['batch'] = $batch = $this->db->query($query)->row();
+        
+        $this->load->view(ADMIN_DIR . "trainings/training_batch/print_training_batch_schedule", $this->data);
+
+    }        
+                    
 
 
 }
