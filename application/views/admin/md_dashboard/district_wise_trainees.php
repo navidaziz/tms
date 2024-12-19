@@ -36,6 +36,20 @@ $results = $this->db->query($query)->result();
         title: {
             text: 'District-wise Total Count by Trainees'
         },
+        plotOptions: {
+                column: {
+                    dataLabels: {
+                        enabled: true, // Enable data labels
+                        style: {
+                        fontWeight: 'bold',
+                        color: 'black' // Color of the text
+                    },
+                    verticalAlign: 'bottom', // Align the label to the bottom of the bar
+                    y: -5 // Adjust the position to move the label above the bar
+                    }
+                }
+            },
+            
         xAxis: {
             categories: categories,  // Districts as x-axis categories
             title: {

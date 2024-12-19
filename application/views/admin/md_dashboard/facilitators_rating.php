@@ -107,6 +107,20 @@ $facilitators = $this->db->query($query)->result();
                 text: 'Rating Categories'
             }
         },
+        plotOptions: {
+                column: {
+                    dataLabels: {
+                        enabled: true, // Enable data labels
+                        style: {
+                        fontWeight: 'bold',
+                        color: 'black' // Color of the text
+                    },
+                    verticalAlign: 'bottom', // Align the label to the bottom of the bar
+                    y: -5 // Adjust the position to move the label above the bar
+                    }
+                }
+            },
+            
         yAxis: {
             min: 1,
             max: 5,
