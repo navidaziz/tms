@@ -1337,4 +1337,53 @@ class Trainings extends Admin_Controller
         
     }
 
+
+    public function get_training_certificate_form(){
+    
+           $certificate_id = (int) $this->input->post("certificate_id");
+           $query = "SELECT * FROM 
+            training_certificates 
+            WHERE certificate_id = $certificate_id";
+            $input = $this->db->query($query)->row();
+            $this->data["input"] = $input;
+            $this->data['title'] = "Update Certificate";
+            $this->load->view(ADMIN_DIR . "trainings/training_batch/get_training_certificate_form", $this->data);
+            }
+
+    public function add_training_certificate()
+            {
+                    $this->form_validation->set_rules("certificate_id", "Certificate ID", "required");
+                    $this->form_validation->set_rules("certificate_title", "Certificate Title", "required");
+                    $this->form_validation->set_rules("certficate_sub_title", "Certficate Sub Title", "required");
+                    $this->form_validation->set_rules("certificate_for", "Certificate For", "required");
+                    $this->form_validation->set_rules("awarded_to", "Awarded To", "required");
+                    $this->form_validation->set_rules("training_title", "Training Title", "required");
+                    $this->form_validation->set_rules("certificate_footer", "Certificate Footer", "required");
+                    $this->form_validation->set_rules("left_signatory", "Left Signatory", "required");
+                    $this->form_validation->set_rules("right_signatory", "Right Signatory", "required");
+                    
+                if ($this->form_validation->run() == FALSE) {
+                    echo '<div class="alert alert-danger">' . validation_errors() . "</div>";
+                    exit();
+                } else {
+                        
+                        $input["certificate_title"] = $this->input->post("certificate_title");
+                        $input["certficate_sub_title"] = $this->input->post("certficate_sub_title");
+                        $input["certificate_for"] = $this->input->post("certificate_for");
+                        $input["awarded_to"] = $this->input->post("awarded_to");
+                        $input["training_title"] = $this->input->post("training_title");
+                        $input["certificate_footer"] = $this->input->post("certificate_footer");
+                        $input["left_signatory"] = $this->input->post("left_signatory");
+                        $input["right_signatory"] = $this->input->post("right_signatory");
+                        $input["last_updated"] = date('Y-m-d H:i:s');
+                        $certificate_id = (int) $this->input->post("certificate_id");
+                        $this->db->where("certificate_id", $certificate_id); 
+                       
+                        $this->db->update("training_certificates", $input);
+                        
+                    echo "success";
+                }
+            }        
+
+
 }
