@@ -255,9 +255,9 @@
                                     <td style="vertical-align: top; text-align:center; margin-right:10px; ">
                                         <h4 style="color:black; font-weight: bold"><?php echo $system_global_settings[0]->system_title ?> </h4>
                                         <small><strong><?php echo $system_global_settings[0]->phone_number; ?> - <?php echo $system_global_settings[0]->mobile_number; ?> </strong></small>
-                                        
+
                                     </td>
-                                    
+
                                 </tr>
 
                             </table>
@@ -267,117 +267,117 @@
                     </tr>
                 </thead>
                 <tbody>
-                <tr>
-                <td>
-                    <div >
-                    <h4 style="text-align:center"><strong>Training Schedule</strong></h4>
-                    
-                    <h5>Training: <strong><?php 
-                    echo $training->title ?> - Code: <?php echo $training->code ?></strong></h5>
-                    <h6>Batch: <strong><?php 
-                    echo $batch->batch_title ?> - Date : <?php echo date('d M, Y', strtotime($batch->batch_start_date)) ?> to 
-                    <?php echo date('d M, Y', strtotime($batch->batch_end_date)) ?> - location: (<?php echo  $batch->location; ?>) </strong></h6>
-                    
-                    <hr style="margin-bottom: 10px;" />
-                </div>
+                    <tr>
+                        <td>
+                            <div>
+                                <h4 style="text-align:center"><strong>Training Schedule</strong></h4>
 
-                    <?php
-        $startDate = new DateTime($batch->batch_start_date);
-        $endDate = new DateTime($batch->batch_end_date);
+                                <h5>Training: <strong><?php
+                                                        echo $training->title ?> - Code: <?php echo $training->code ?></strong></h5>
+                                <h6>Batch: <strong><?php
+                                                    echo $batch->batch_title ?> - Date : <?php echo date('d M, Y', strtotime($batch->batch_start_date)) ?> to
+                                        <?php echo date('d M, Y', strtotime($batch->batch_end_date)) ?> - location: (<?php echo  $batch->location; ?>) </strong></h6>
 
-        $currentDate = clone $startDate;
-        while ($currentDate <= $endDate) {
+                                <hr style="margin-bottom: 10px;" />
+                            </div>
 
-        ?>
-            <table class="table table-striped" style=" width: 100%; border-collapse: separate; border-spacing: 2px; margin-bottom:10px; border:1px solid lightgray; border-radius:5px;">
-                
-            <tr>
+                            <?php
+                            $startDate = new DateTime($batch->batch_start_date);
+                            $endDate = new DateTime($batch->batch_end_date);
 
-                    <td colspan="5">
-                        <strong><?php echo date('l j F Y', strtotime($currentDate->format('Y-m-d'))); ?></strong>
-                        <hr style="margin: 2px !important;" />
-                    </td>
-                </tr>
-                <?php
-                $query = "SELECT * FROM `training_batch_sessions` 
+                            $currentDate = clone $startDate;
+                            while ($currentDate <= $endDate) {
+
+                            ?>
+                                <table class="table table-striped" style=" width: 100%; border-collapse: separate; border-spacing: 2px; margin-bottom:10px; border:1px solid lightgray; border-radius:5px;">
+
+                                    <tr>
+
+                                        <td colspan="5">
+                                            <strong><?php echo date('l j F Y', strtotime($currentDate->format('Y-m-d'))); ?></strong>
+                                            <hr style="margin: 2px !important;" />
+                                        </td>
+                                    </tr>
+                                    <?php
+                                    $query = "SELECT * FROM `training_batch_sessions` 
                                             WHERE training_id = '" . $training->training_id . "' 
                                             AND batch_id = '" . $batch->batch_id . "'
                                             AND session_date = '" . $currentDate->format('Y-m-d') . "'
                                             ORDER BY start_time ASC";
-                $batch_sessions = $this->db->query($query)->result();
-                foreach ($batch_sessions as $batch_session) {
-                ?>
-                    <tr >
-                   
-                        <th style="border-left: 2px solid gray; width:150px !important">
-                            <?php echo strtoupper(date('g:i a', strtotime($batch_session->start_time))); ?>
-                            -
-                            <?php echo strtoupper(date('g:i a', strtotime($batch_session->end_time))); ?>
-                        </th>
-                        <td >
-                            <?php if ($batch_session->activity_type = 'Activity') { ?>
-                                <?php echo $batch_session->course_title; ?>
-                            <?php } ?>
-                            <?php if ($batch_session->activity_type = 'Break') { ?>
-                                <strong><?php echo $batch_session->break_detail; ?></strong>
-                            <?php } ?>
+                                    $batch_sessions = $this->db->query($query)->result();
+                                    foreach ($batch_sessions as $batch_session) {
+                                    ?>
+                                        <tr>
+
+                                            <th style="border-left: 2px solid gray; width:150px !important">
+                                                <?php echo strtoupper(date('g:i a', strtotime($batch_session->start_time))); ?>
+                                                -
+                                                <?php echo strtoupper(date('g:i a', strtotime($batch_session->end_time))); ?>
+                                            </th>
+                                            <td>
+                                                <?php if ($batch_session->activity_type = 'Activity') { ?>
+                                                    <?php echo $batch_session->course_title; ?>
+                                                <?php } ?>
+                                                <?php if ($batch_session->activity_type = 'Break') { ?>
+                                                    <strong><?php echo $batch_session->break_detail; ?></strong>
+                                                <?php } ?>
+                                            </td>
+                                            <th style="width:100px !important"><?php if ($batch_session->facilitator_id) {
+                                                                                    $query = "SELECT * FROM users WHERE user_id = $batch_session->facilitator_id";
+                                                                                    $facilitator = $this->db->query($query)->row();
+                                                                                    if ($facilitator) {
+                                                                                        echo $facilitator->name . " <br />(<small><i>" . $facilitator->designation . "</i></small>)";
+                                                                                    }
+                                                                                } ?></th>
+
+                                        </tr>
+                                    <?php } ?>
                         </td>
-                        <th style="width:100px !important"><?php if ($batch_session->facilitator_id) {
-                                $query = "SELECT * FROM users WHERE user_id = $batch_session->facilitator_id";
-                                $facilitator = $this->db->query($query)->row();
-                                if ($facilitator) {
-                                    echo $facilitator->name . " <br />(<small><i>" . $facilitator->designation . "</i></small>)";
-                                }
-                            } ?></th>
-                        
                     </tr>
-                <?php } ?>
-                        </td>
-                        </tr>
             </table>
-            
+
 
         <?php
 
-            $currentDate->modify('+1 day');
-        }
+                                $currentDate->modify('+1 day');
+                            }
         ?>
 
 
 
-                      
 
-                    </td>
 
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td>
-                            <p style="text-align: center;">
-                                <small>
-                                    <strong><?php echo $system_global_settings[0]->address ?></strong>
+        </td>
 
-                                    <br />
-                                    Print @ <?php echo date("d M, Y h:m:s A"); ?>
-                                    by
-                                    <?php
-                                    $query = "SELECT
+        </tbody>
+        <tfoot>
+            <tr>
+                <td>
+                    <p style="text-align: center;">
+                        <small>
+                            <strong><?php echo $system_global_settings[0]->address ?></strong>
+
+                            <br />
+                            Print @ <?php echo date("d M, Y h:m:s A"); ?>
+                            by
+                            <?php
+                            $query = "SELECT
                                 `roles`.`role_title`,
                                 `users`.`name`  
                                 FROM `roles`,
                                 `users` 
                                 WHERE `roles`.`role_id` = `users`.`role_id`
                                 AND `users`.`user_id`='" . $this->session->userdata("userId") . "'";
-                                    $user_data = $this->db->query($query)->row();
+                            $user_data = $this->db->query($query)->row();
 
-                                    ?>
-                                    <?php echo $user_data->name; ?> (<?php echo $user_data->role_title; ?>)
-                                </small>
-                            </p>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+                            ?>
+                            <?php echo $user_data->name; ?> (<?php echo $user_data->role_title; ?>)
+                        </small>
+                    </p>
+                </td>
+            </tr>
+        </tfoot>
+        </table>
         </div>
 
     </page>

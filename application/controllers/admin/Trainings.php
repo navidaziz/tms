@@ -238,7 +238,7 @@ class Trainings extends Admin_Controller
     {
         $training_id = (int) $training_id;
         $this->data["training"] = $this->training_model->get($training_id);
-		//echo $this->db->last_query();
+        //echo $this->db->last_query();
 
         $this->data["title"] = $this->lang->line('Edit Training');
         $this->data["view"] = ADMIN_DIR . "trainings/edit_training";
@@ -423,9 +423,9 @@ class Trainings extends Admin_Controller
         $this->form_validation->set_rules('nomination', 'Nomination', 'required');
         $this->form_validation->set_rules('user_mobile_number', 'User Mobile Number', 'required|numeric');
         $this->form_validation->set_rules('duty_station', 'Duty Station', 'required');
-		 $this->form_validation->set_rules('duty_district', 'duty_district', 'required');
+        $this->form_validation->set_rules('duty_district', 'duty_district', 'required');
 
-//print_r($this->input->post());
+        //print_r($this->input->post());
 
         if ($this->form_validation->run() == false) {
             // Validation failed
@@ -449,7 +449,7 @@ class Trainings extends Admin_Controller
                     'user_name' => $this->input->post('cnic'),
                     'user_password' => $this->input->post('user_password'),
                     'biometric_id' => $this->input->post('biometric_id'),
-					'duty_district' => $this->input->post('duty_district'),
+                    'duty_district' => $this->input->post('duty_district'),
                     'duty_station' => $this->input->post('duty_station')
                 );
                 if ($this->input->post('nomination_type') == 'resource_person') {
@@ -482,8 +482,8 @@ class Trainings extends Admin_Controller
                     'user_name' => $this->input->post('cnic'),
                     'user_password' => '123456',
                     'biometric_id' => $this->input->post('biometric_id'),
-					'duty_district' => $this->input->post('duty_district'),
-					'duty_station' => $this->input->post('duty_station')
+                    'duty_district' => $this->input->post('duty_district'),
+                    'duty_station' => $this->input->post('duty_station')
                 );
 
                 if ($this->input->post('nomination_type') == 'resource_person') {
@@ -1139,7 +1139,7 @@ class Trainings extends Admin_Controller
 
 
 
-            $inputs['training_title'] = $training_title."<br />".$batch->batch_title.'  ( From '.date('d M, Y', strtotime($batch->batch_start_date)).' to '.date('d M, Y', strtotime($batch->batch_end_date)).' )';
+            $inputs['training_title'] = $training_title . "<br />" . $batch->batch_title . '  ( From ' . date('d M, Y', strtotime($batch->batch_start_date)) . ' to ' . date('d M, Y', strtotime($batch->batch_end_date)) . ' )';
             $inputs['certificate_footer'] = $template->certificate_footer;
             $inputs['left_signatory'] = $template->left_signatory;
             $inputs['right_signatory'] = $template->right_signatory;
@@ -1159,20 +1159,95 @@ class Trainings extends Admin_Controller
             echo 'Certificate already created.';
         }
     }
-    
 
-    function certificate_print_text($pdf, $x, $y, $align, $font, $style, $size, $text, $width = 0) {
-            $pdf->setFont($font, $style, $size);
-            $pdf->SetXY($x, $y);
-            $pdf->writeHTMLCell($width, 0, '', '', $text, 0, 0, 0, true, $align);
+    public function facilitator_generate_certificate($training_id, $batch_id, $trainee_id)
+    {
+        $training_id = (int) $training_id;
+        $batch_id = (int) $batch_id;
+        $trainee_id = (int) $trainee_id;
+
+        //check certificate created or not......
+        $query = "SELECT COUNT(*) as total FROM facilitators_certificates 
+        WHERE training_id = '" . $training_id . "'
+        AND batch_id = '" . $batch_id . "'
+        AND trainee_id = '" . $trainee_id . "' ";
+        $trainee_certificate = $this->db->query($query)->row()->total;
+        if ($trainee_certificate == 0) {
+            $query = "SELECT * FROM trainings WHERE training_id = ?";
+            $training = $this->db->query($query, array($training_id))->row();
+
+            $query = "SELECT * FROM users WHERE user_id = ? and role_id = 3";
+            $trainee = $this->db->query($query, array($trainee_id))->row();
+
+            $query = "SELECT * FROM templates WHERE department_id = ?";
+            $template = $this->db->query($query, array($training->department_id))->row();
+
+
+            $query = "SELECT * FROM training_batches WHERE batch_id = ? and training_id = ?";
+            $batch = $this->db->query($query, array($batch_id, $training_id))->row();
+
+            //create certificate ....
+
+            $inputs = array();
+            $inputs['department_id'] = $training->department_id;
+            $inputs['training_id'] = $training_id;
+            $inputs['batch_id'] = $batch_id;
+            $inputs['trainee_id	'] = $trainee_id;
+            $inputs['certificate_title'] = $template->certificate_title;
+            $inputs['certficate_sub_title'] = $template->certficate_sub_title;
+            //$inputs['certificate_for'] = $template->certificate_for;
+
+            $inputs['certificate_for'] = 'CERTIFICATE OF PARTICIPATION';
+
+            $awarded_to = $trainee->user_title;
+            if ($trainee->gender == 'Male') {
+                $awarded_to .= ' s/o ';
+            }
+            if ($trainee->gender == 'Female') {
+                $awarded_to .= ' d/o ';
+            }
+            $awarded_to .=  $trainee->father_name;
+            $inputs['awarded_to'] = $awarded_to;
+
+            $training_title = $training->title;
+
+
+
+            $inputs['training_title'] = $training_title . "<br />" . $batch->batch_title . '  ( From ' . date('d M, Y', strtotime($batch->batch_start_date)) . ' to ' . date('d M, Y', strtotime($batch->batch_end_date)) . ' )';
+            $inputs['certificate_footer'] = $template->certificate_footer;
+            $inputs['left_signatory'] = $template->left_signatory;
+            $inputs['right_signatory'] = $template->right_signatory;
+            $inputs['created_by'] = $this->session->userdata('userId');
+            $this->db->insert('facilitators_certificates', $inputs);
+            $certificate_id = $this->db->insert_id();
+
+            $where['certificate_id'] = $certificate_id;
+            $this->db->where($where);
+            $certificate_code['certificate_code'] = date('Y') . "-" . $certificate_id;
+            $this->db->update('facilitators_certificates', $certificate_code);
+
+            //update certificate code here.....
+            redirect(ADMIN_DIR . "trainings/training_batch/" . $training_id . "/" . $batch_id . "?tab=facilitators");
+        } else {
+            //certificate already created
+            echo 'Certificate already created.';
         }
+    }
+
+
+    function certificate_print_text($pdf, $x, $y, $align, $font, $style, $size, $text, $width = 0)
+    {
+        $pdf->setFont($font, $style, $size);
+        $pdf->SetXY($x, $y);
+        $pdf->writeHTMLCell($width, 0, '', '', $text, 0, 0, 0, true, $align);
+    }
 
     public function print_certificate($training_id, $batch_id, $trainee_id)
     {
 
-       
+
         $pdf = new Tc_pdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        
+
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetTitle("Certificate");
         $pdf->SetProtection(array('modify'));
@@ -1180,120 +1255,120 @@ class Trainings extends Admin_Controller
         $pdf->setPrintFooter(false);
         $pdf->SetAutoPageBreak(false, 0);
         $pdf->AddPage();
-        
-		
-				    $query = "SELECT training_certificates.*,training_batches.batch_start_date,training_batches.batch_end_date FROM `training_certificates` inner join training_batches on training_certificates.batch_id=training_batches.batch_id 
+
+
+        $query = "SELECT training_certificates.*,training_batches.batch_start_date,training_batches.batch_end_date FROM `training_certificates` inner join training_batches on training_certificates.batch_id=training_batches.batch_id 
         WHERE training_certificates.training_id = '" . $training_id . "'
         AND training_certificates.batch_id = '" . $batch_id . "'
         AND training_certificates.trainee_id = '" . $trainee_id . "' ";
         $t_cer = $this->db->query($query)->row();
 
-        
-            $x = 10;
-            $y = 40;
-        
-            
-            $sealx = 150;
-            $sealy = 220;
-            $seal = realpath(K_PATH_IMAGES."/seal.png");
-        
-            $sigx = 30;
-            $sigy = 230;
-            $sig = realpath(K_PATH_IMAGES."./signature.png");
-        
-            $custx = 30;
-            $custy = 230;
-        
-            $wmarkx = 26;
-            $wmarky = 58;
-            $wmarkw = 158;
-            $wmarkh = 170;
-            $wmark = realpath(K_PATH_IMAGES."/watermark.png");
-        
-            $brdrx = 0;
-            $brdry = 0;
-            $brdrw = 210;
-            $brdrh = 297;
-            $codey = 250;
-        
-        
+
+        $x = 10;
+        $y = 40;
+
+
+        $sealx = 150;
+        $sealy = 220;
+        $seal = realpath(K_PATH_IMAGES . "/seal.png");
+
+        $sigx = 30;
+        $sigy = 230;
+        $sig = realpath(K_PATH_IMAGES . "./signature.png");
+
+        $custx = 30;
+        $custy = 230;
+
+        $wmarkx = 26;
+        $wmarky = 58;
+        $wmarkw = 158;
+        $wmarkh = 170;
+        $wmark = realpath(K_PATH_IMAGES . "/watermark.png");
+
+        $brdrx = 0;
+        $brdry = 0;
+        $brdrw = 210;
+        $brdrh = 297;
+        $codey = 250;
+
+
         $fontsans = 'helvetica';
         $fontserif = 'times';
-        
+
         // border
-        $pdf->SetLineStyle(array('width' => 1.5, 'color' => array(0,0,0)));
+        $pdf->SetLineStyle(array('width' => 1.5, 'color' => array(0, 0, 0)));
         $pdf->Rect(10, 10, 190, 277);
         // create middle line border
-        $pdf->SetLineStyle(array('width' => 0.2, 'color' => array(64,64,64)));
+        $pdf->SetLineStyle(array('width' => 0.2, 'color' => array(64, 64, 64)));
         $pdf->Rect(13, 13, 184, 271);
         // create inner line border
-        $pdf->SetLineStyle(array('width' => 1.0, 'color' => array(128,128,128)));
+        $pdf->SetLineStyle(array('width' => 1.0, 'color' => array(128, 128, 128)));
         $pdf->Rect(16, 16, 178, 265);
-        
-		
-		
-		
-        
+
+
+
+
+
         // Set alpha to semi-transparency
         if (file_exists($wmark)) {
             $pdf->SetAlpha(0.2);
             $pdf->Image($wmark, $wmarkx, $wmarky, $wmarkw, $wmarkh);
         }
-        
-            $logox = 165;
-            $logoy = 25;
-            $logo = realpath(K_PATH_IMAGES."./watermark.png");
-        
+
+        $logox = 165;
+        $logoy = 25;
+        $logo = realpath(K_PATH_IMAGES . "./watermark.png");
+
         $pdf->SetAlpha(1);
         if (file_exists($logo)) {
             $pdf->Image($logo, $logox, $logoy, '22', '');
         }
-        
-        
+
+
         //header to left log
-            $KPlogox = 22;
-            $KPlogoy = 25;
-            $KPlogo = realpath(K_PATH_IMAGES."./KPlogo.png");
-        
+        $KPlogox = 22;
+        $KPlogoy = 25;
+        $KPlogo = realpath(K_PATH_IMAGES . "./KPlogo.png");
+
         $pdf->SetAlpha(1);
         if (file_exists($KPlogo)) {
             $pdf->Image($KPlogo, $KPlogox, $KPlogoy, '22', '');
         }
-        
+
         //footer logo
-            $KPlogox_hcip = 93;
-            $KPlogoy_hcip = 240;
-            $KPlogo_hcip = realpath(K_PATH_IMAGES."./hcip_logo.png");
-        
+        $KPlogox_hcip = 93;
+        $KPlogoy_hcip = 240;
+        $KPlogo_hcip = realpath(K_PATH_IMAGES . "./hcip_logo.png");
+
         $pdf->SetAlpha(1);
-		
-			if($t_cer->department_id==2){
-        if (file_exists($KPlogo)) {
-            $pdf->Image($KPlogo_hcip, $KPlogox_hcip, $KPlogoy_hcip, '22', '');
+
+        if ($t_cer->department_id == 2) {
+            if (file_exists($KPlogo)) {
+                $pdf->Image($KPlogo_hcip, $KPlogox_hcip, $KPlogoy_hcip, '22', '');
+            }
         }
-			}
-			
-		if($t_cer->department_id==1){
-         $pdf->SetAlpha(1);
-        if (file_exists($KPlogo)) {
-            $pdf->Image($KPlogo, $KPlogox_hcip, $KPlogoy_hcip, '22', '');
+
+        if ($t_cer->department_id == 1) {
+            $pdf->SetAlpha(1);
+            if (file_exists($KPlogo)) {
+                $pdf->Image($KPlogo, $KPlogox_hcip, $KPlogoy_hcip, '22', '');
+            }
         }
-			}
-        
-        
+
+
         $pdf->SetAlpha(1);
         if (file_exists($seal)) {
-          //  $pdf->Image($seal, $sealx, $sealy, '', '');
+            //  $pdf->Image($seal, $sealx, $sealy, '', '');
         }
         if (file_exists($sig)) {
             //$pdf->Image($sig, $sigx, $sigy, '', '');
         }
-        
-    
 
-        
+
+
+
         $this->certificate_print_text($pdf, $x, $y - 10, 'C', $fontserif, 'B', 15, $t_cer->certificate_title);
-       
+
         $pdf->SetTextColor(0, 0, 120);
         $this->certificate_print_text($pdf, $x, $y, 'C', $fontsans, '', 13, $t_cer->certficate_sub_title);
         $pdf->SetTextColor(0, 0, 0);
@@ -1301,94 +1376,320 @@ class Trainings extends Admin_Controller
         $this->certificate_print_text($pdf, $x, $y + 40, 'C', $fontserif, '', 14, "AWARDED TO");
         $this->certificate_print_text($pdf, $x, $y + 51, 'C', $fontsans, '', 20, $t_cer->awarded_to);
         $this->certificate_print_text($pdf, $x, $y + 67, 'C', $fontserif, '', 14, "ON COMPLETION OF");
-        
+
         $this->certificate_print_text($pdf, $x, $y + 82, 'C', $fontsans, '', 15, $t_cer->training_title);
-        
-        
-        $this->certificate_print_text($pdf, $x, $y + 128, 'C', $fontsans, '', 14,  'Issue Date: '.date('d M, Y',strtotime($t_cer->batch_end_date)));
+
+
+        $this->certificate_print_text($pdf, $x, $y + 128, 'C', $fontsans, '', 14,  'Issue Date: ' . date('d M, Y', strtotime($t_cer->batch_end_date)));
         $this->certificate_print_text($pdf, $x, $y + 136, 'C', $fontserif, '', 10, "AT");
         $this->certificate_print_text($pdf, $x, $y + 140, 'C', $fontserif, '', 13,  $t_cer->certificate_footer);
-        
-        $this->certificate_print_text($pdf, $x, $y + 155, 'C', $fontsans, 'B', 14,  "Certificate ID: (".$t_cer->certificate_code.")");
-        
-        $this->certificate_print_text($pdf, $x+125, $y + 180, 'C', $fontsans, '', 14,  $t_cer->left_signatory);
-        $this->certificate_print_text($pdf, $x+15, $y + 180, 'L', $fontsans, '', 14,  $t_cer->right_signatory);
-        
-        
-       
-	
-	   
-	   if($t_cer->department_id==1){
-    $this->certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "GOVERNMENT OF KHYBER PAKHTUNKHWA");
-        
-	   }
-	   
-	   	if($t_cer->department_id==2){
-			 $this->certificate_print_text($pdf, $x, $y + 222, 'C', $fontsans, '', 14,  "Supported by");
-       $this->certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "KHYBER PAKHTUNKHWA HUMAN CAPITAL INVESTMENT PROJECT (HEALTH)");}
-	   
-        header ("Content-Type: application/pdf");
-		
-		//echo $pdf->Output($t_cer->cnic.'.pdf', 'I');	
-       echo $pdf->Output('', 'I');
-                
-                
-       ///yn     
-        
+
+        $this->certificate_print_text($pdf, $x, $y + 155, 'C', $fontsans, 'B', 14,  "Certificate ID: (" . $t_cer->certificate_code . ")");
+
+        $this->certificate_print_text($pdf, $x + 125, $y + 180, 'C', $fontsans, '', 14,  $t_cer->left_signatory);
+        $this->certificate_print_text($pdf, $x + 15, $y + 180, 'L', $fontsans, '', 14,  $t_cer->right_signatory);
+
+
+
+
+
+        if ($t_cer->department_id == 1) {
+            $this->certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "GOVERNMENT OF KHYBER PAKHTUNKHWA");
+        }
+
+        if ($t_cer->department_id == 2) {
+            $this->certificate_print_text($pdf, $x, $y + 222, 'C', $fontsans, '', 14,  "Supported by");
+            $this->certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "KHYBER PAKHTUNKHWA HUMAN CAPITAL INVESTMENT PROJECT (HEALTH)");
+        }
+
+        header("Content-Type: application/pdf");
+
+        //echo $pdf->Output($t_cer->cnic.'.pdf', 'I');	
+        echo $pdf->Output('', 'I');
+
+
+        ///yn     
+
+    }
+
+    public function facilitator_print_certificate($training_id, $batch_id, $trainee_id)
+    {
+
+
+        $pdf = new Tc_pdf(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetTitle("Certificate");
+        $pdf->SetProtection(array('modify'));
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->SetAutoPageBreak(false, 0);
+        $pdf->AddPage();
+
+
+        $query = "SELECT facilitators_certificates.*,training_batches.batch_start_date,training_batches.batch_end_date 
+        FROM `facilitators_certificates` 
+        inner join training_batches on facilitators_certificates.batch_id=training_batches.batch_id 
+        WHERE facilitators_certificates.training_id = '" . $training_id . "'
+        AND facilitators_certificates.batch_id = '" . $batch_id . "'
+        AND facilitators_certificates.trainee_id = '" . $trainee_id . "' ";
+        $t_cer = $this->db->query($query)->row();
+
+
+        $x = 10;
+        $y = 40;
+
+
+        $sealx = 150;
+        $sealy = 220;
+        $seal = realpath(K_PATH_IMAGES . "/seal.png");
+
+        $sigx = 30;
+        $sigy = 230;
+        $sig = realpath(K_PATH_IMAGES . "./signature.png");
+
+        $custx = 30;
+        $custy = 230;
+
+        $wmarkx = 26;
+        $wmarky = 58;
+        $wmarkw = 158;
+        $wmarkh = 170;
+        $wmark = realpath(K_PATH_IMAGES . "/watermark.png");
+
+        $brdrx = 0;
+        $brdry = 0;
+        $brdrw = 210;
+        $brdrh = 297;
+        $codey = 250;
+
+
+        $fontsans = 'helvetica';
+        $fontserif = 'times';
+
+        // border
+        $pdf->SetLineStyle(array('width' => 1.5, 'color' => array(0, 0, 0)));
+        $pdf->Rect(10, 10, 190, 277);
+        // create middle line border
+        $pdf->SetLineStyle(array('width' => 0.2, 'color' => array(64, 64, 64)));
+        $pdf->Rect(13, 13, 184, 271);
+        // create inner line border
+        $pdf->SetLineStyle(array('width' => 1.0, 'color' => array(128, 128, 128)));
+        $pdf->Rect(16, 16, 178, 265);
+
+
+
+
+
+        // Set alpha to semi-transparency
+        if (file_exists($wmark)) {
+            $pdf->SetAlpha(0.2);
+            $pdf->Image($wmark, $wmarkx, $wmarky, $wmarkw, $wmarkh);
+        }
+
+        $logox = 165;
+        $logoy = 25;
+        $logo = realpath(K_PATH_IMAGES . "./watermark.png");
+
+        $pdf->SetAlpha(1);
+        if (file_exists($logo)) {
+            $pdf->Image($logo, $logox, $logoy, '22', '');
+        }
+
+
+        //header to left log
+        $KPlogox = 22;
+        $KPlogoy = 25;
+        $KPlogo = realpath(K_PATH_IMAGES . "./KPlogo.png");
+
+        $pdf->SetAlpha(1);
+        if (file_exists($KPlogo)) {
+            $pdf->Image($KPlogo, $KPlogox, $KPlogoy, '22', '');
+        }
+
+        //footer logo
+        $KPlogox_hcip = 93;
+        $KPlogoy_hcip = 240;
+        $KPlogo_hcip = realpath(K_PATH_IMAGES . "./hcip_logo.png");
+
+        $pdf->SetAlpha(1);
+
+        if ($t_cer->department_id == 2) {
+            if (file_exists($KPlogo)) {
+                $pdf->Image($KPlogo_hcip, $KPlogox_hcip, $KPlogoy_hcip, '22', '');
+            }
+        }
+
+        if ($t_cer->department_id == 1) {
+            $pdf->SetAlpha(1);
+            if (file_exists($KPlogo)) {
+                $pdf->Image($KPlogo, $KPlogox_hcip, $KPlogoy_hcip, '22', '');
+            }
+        }
+
+
+        $pdf->SetAlpha(1);
+        if (file_exists($seal)) {
+            //  $pdf->Image($seal, $sealx, $sealy, '', '');
+        }
+        if (file_exists($sig)) {
+            //$pdf->Image($sig, $sigx, $sigy, '', '');
+        }
+
+
+
+
+        $this->certificate_print_text($pdf, $x, $y - 10, 'C', $fontserif, 'B', 15, $t_cer->certificate_title);
+
+        $pdf->SetTextColor(0, 0, 120);
+        $this->certificate_print_text($pdf, $x, $y, 'C', $fontsans, '', 13, $t_cer->certficate_sub_title);
+        $pdf->SetTextColor(0, 0, 0);
+        $this->certificate_print_text($pdf, $x, $y + 30, 'C', $fontserif, '', 15, $t_cer->certificate_for);
+        $this->certificate_print_text($pdf, $x, $y + 40, 'C', $fontserif, '', 14, "AWARDED TO");
+        $this->certificate_print_text($pdf, $x, $y + 51, 'C', $fontsans, '', 20, $t_cer->awarded_to);
+        $this->certificate_print_text($pdf, $x, $y + 67, 'C', $fontserif, '', 14, "ON COMPLETION OF");
+
+        $this->certificate_print_text($pdf, $x, $y + 82, 'C', $fontsans, '', 15, $t_cer->training_title);
+
+
+        $this->certificate_print_text($pdf, $x, $y + 128, 'C', $fontsans, '', 14,  'Issue Date: ' . date('d M, Y', strtotime($t_cer->batch_end_date)));
+        $this->certificate_print_text($pdf, $x, $y + 136, 'C', $fontserif, '', 10, "AT");
+        $this->certificate_print_text($pdf, $x, $y + 140, 'C', $fontserif, '', 13,  $t_cer->certificate_footer);
+
+        $this->certificate_print_text($pdf, $x, $y + 155, 'C', $fontsans, 'B', 14,  "Certificate ID: (" . $t_cer->certificate_code . ")");
+
+        $this->certificate_print_text($pdf, $x + 125, $y + 180, 'C', $fontsans, '', 14,  $t_cer->left_signatory);
+        $this->certificate_print_text($pdf, $x + 15, $y + 180, 'L', $fontsans, '', 14,  $t_cer->right_signatory);
+
+
+
+
+
+        if ($t_cer->department_id == 1) {
+            $this->certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "GOVERNMENT OF KHYBER PAKHTUNKHWA");
+        }
+
+        if ($t_cer->department_id == 2) {
+            $this->certificate_print_text($pdf, $x, $y + 222, 'C', $fontsans, '', 14,  "Supported by");
+            $this->certificate_print_text($pdf, $x, $y + 230, 'C', $fontsans, '', 13,  "KHYBER PAKHTUNKHWA HUMAN CAPITAL INVESTMENT PROJECT (HEALTH)");
+        }
+
+        header("Content-Type: application/pdf");
+
+        //echo $pdf->Output($t_cer->cnic.'.pdf', 'I');	
+        echo $pdf->Output('', 'I');
+
+
+        ///yn     
+
     }
 
 
-    public function get_training_certificate_form(){
-    
-           $certificate_id = (int) $this->input->post("certificate_id");
-           $query = "SELECT * FROM 
+    public function get_training_certificate_form()
+    {
+
+        $certificate_id = (int) $this->input->post("certificate_id");
+        $query = "SELECT * FROM 
             training_certificates 
             WHERE certificate_id = $certificate_id";
-            $input = $this->db->query($query)->row();
-            $this->data["input"] = $input;
-            $this->data['title'] = "Update Certificate";
-            $this->load->view(ADMIN_DIR . "trainings/training_batch/get_training_certificate_form", $this->data);
-            }
+        $input = $this->db->query($query)->row();
+        $this->data["input"] = $input;
+        $this->data['title'] = "Update Certificate";
+        $this->load->view(ADMIN_DIR . "trainings/training_batch/get_training_certificate_form", $this->data);
+    }
+    public function get_facilitator_certificate_form()
+    {
+
+        $certificate_id = (int) $this->input->post("certificate_id");
+        $query = "SELECT * FROM 
+            facilitators_certificates 
+            WHERE certificate_id = $certificate_id";
+        $input = $this->db->query($query)->row();
+        $this->data["input"] = $input;
+        $this->data['title'] = "Update Certificate";
+        $this->load->view(ADMIN_DIR . "trainings/training_batch/get_facilitator_certificate_form", $this->data);
+    }
+
 
     public function add_training_certificate()
-            {
-                    $this->form_validation->set_rules("certificate_id", "Certificate ID", "required");
-                    $this->form_validation->set_rules("certificate_title", "Certificate Title", "required");
-                    $this->form_validation->set_rules("certficate_sub_title", "Certficate Sub Title", "required");
-                    $this->form_validation->set_rules("certificate_for", "Certificate For", "required");
-                    $this->form_validation->set_rules("awarded_to", "Awarded To", "required");
-                    $this->form_validation->set_rules("training_title", "Training Title", "required");
-                    $this->form_validation->set_rules("certificate_footer", "Certificate Footer", "required");
-                    $this->form_validation->set_rules("left_signatory", "Left Signatory", "required");
-                    $this->form_validation->set_rules("right_signatory", "Right Signatory", "required");
-                    
-                if ($this->form_validation->run() == FALSE) {
-                    echo '<div class="alert alert-danger">' . validation_errors() . "</div>";
-                    exit();
-                } else {
-                        
-                        $input["certificate_title"] = $this->input->post("certificate_title");
-                        $input["certficate_sub_title"] = $this->input->post("certficate_sub_title");
-                        $input["certificate_for"] = $this->input->post("certificate_for");
-                        $input["awarded_to"] = $this->input->post("awarded_to");
-                        $input["training_title"] = $this->input->post("training_title");
-                        $input["certificate_footer"] = $this->input->post("certificate_footer");
-                        $input["left_signatory"] = $this->input->post("left_signatory");
-                        $input["right_signatory"] = $this->input->post("right_signatory");
-                        $input["last_updated"] = date('Y-m-d H:i:s');
-                        $certificate_id = (int) $this->input->post("certificate_id");
-                        $this->db->where("certificate_id", $certificate_id); 
-                       
-                        $this->db->update("training_certificates", $input);
-                        
-                    echo "success";
-                }
-            }   
-           
-    public function print_training_batch_schedule($training_id,$batch_id){
+    {
+        $this->form_validation->set_rules("certificate_id", "Certificate ID", "required");
+        $this->form_validation->set_rules("certificate_title", "Certificate Title", "required");
+        $this->form_validation->set_rules("certficate_sub_title", "Certficate Sub Title", "required");
+        $this->form_validation->set_rules("certificate_for", "Certificate For", "required");
+        $this->form_validation->set_rules("awarded_to", "Awarded To", "required");
+        $this->form_validation->set_rules("training_title", "Training Title", "required");
+        $this->form_validation->set_rules("certificate_footer", "Certificate Footer", "required");
+        $this->form_validation->set_rules("left_signatory", "Left Signatory", "required");
+        $this->form_validation->set_rules("right_signatory", "Right Signatory", "required");
+
+        if ($this->form_validation->run() == FALSE) {
+            echo '<div class="alert alert-danger">' . validation_errors() . "</div>";
+            exit();
+        } else {
+
+            $input["certificate_title"] = $this->input->post("certificate_title");
+            $input["certficate_sub_title"] = $this->input->post("certficate_sub_title");
+            $input["certificate_for"] = $this->input->post("certificate_for");
+            $input["awarded_to"] = $this->input->post("awarded_to");
+            $input["training_title"] = $this->input->post("training_title");
+            $input["certificate_footer"] = $this->input->post("certificate_footer");
+            $input["left_signatory"] = $this->input->post("left_signatory");
+            $input["right_signatory"] = $this->input->post("right_signatory");
+            $input["last_updated"] = date('Y-m-d H:i:s');
+            $certificate_id = (int) $this->input->post("certificate_id");
+            $this->db->where("certificate_id", $certificate_id);
+
+            $this->db->update("training_certificates", $input);
+
+            echo "success";
+        }
+    }
+
+    public function update_facilitator_certificate()
+    {
+        $this->form_validation->set_rules("certificate_id", "Certificate ID", "required");
+        $this->form_validation->set_rules("certificate_title", "Certificate Title", "required");
+        $this->form_validation->set_rules("certficate_sub_title", "Certficate Sub Title", "required");
+        $this->form_validation->set_rules("certificate_for", "Certificate For", "required");
+        $this->form_validation->set_rules("awarded_to", "Awarded To", "required");
+        $this->form_validation->set_rules("training_title", "Training Title", "required");
+        $this->form_validation->set_rules("certificate_footer", "Certificate Footer", "required");
+        $this->form_validation->set_rules("left_signatory", "Left Signatory", "required");
+        $this->form_validation->set_rules("right_signatory", "Right Signatory", "required");
+
+        if ($this->form_validation->run() == FALSE) {
+
+            echo '<div class="alert alert-danger">' . validation_errors() . "</div>";
+            exit();
+        } else {
+
+            $input["certificate_title"] = $this->input->post("certificate_title");
+            $input["certficate_sub_title"] = $this->input->post("certficate_sub_title");
+            $input["certificate_for"] = $this->input->post("certificate_for");
+            $input["awarded_to"] = $this->input->post("awarded_to");
+            $input["training_title"] = $this->input->post("training_title");
+            $input["certificate_footer"] = $this->input->post("certificate_footer");
+            $input["left_signatory"] = $this->input->post("left_signatory");
+            $input["right_signatory"] = $this->input->post("right_signatory");
+            $input["last_updated"] = date('Y-m-d H:i:s');
+            $certificate_id = (int) $this->input->post("certificate_id");
+
+            $this->db->where("certificate_id", $certificate_id);
+
+            if ($this->db->update("facilitators_certificates", $input)) {
+                echo "success";
+            } else {
+                echo "Database Error";
+            }
+        }
+    }
+
+    public function print_training_batch_schedule($training_id, $batch_id)
+    {
         $training_id = (int) $training_id;
         $batch_id = (int) $batch_id;
-        
+
         $training_id = (int) $training_id;
         $this->data['training_id'] = $training_id;
         $this->data["training"] = $training = $this->training_model->get($training_id);
@@ -1398,11 +1699,7 @@ class Trainings extends Admin_Controller
         WHERE training_id = $training_id 
         AND batch_id = $batch_id";
         $this->data['batch'] = $batch = $this->db->query($query)->row();
-        
+
         $this->load->view(ADMIN_DIR . "trainings/training_batch/print_training_batch_schedule", $this->data);
-
-    }        
-                    
-
-
+    }
 }

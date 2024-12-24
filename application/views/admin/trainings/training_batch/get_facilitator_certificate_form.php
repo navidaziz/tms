@@ -132,7 +132,7 @@
             var formData = $(this).serialize();
             $.ajax({
                 type: 'POST',
-                url: '<?php echo site_url(ADMIN_DIR . "trainings/add_training_certificate"); ?>',
+                url: '<?php echo site_url(ADMIN_DIR . "trainings/update_facilitator_certificate"); ?>',
                 data: formData,
                 success: function(response) {
                     if (response == 'success') {

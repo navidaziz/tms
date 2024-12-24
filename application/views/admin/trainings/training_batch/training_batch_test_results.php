@@ -135,7 +135,7 @@
                             }
                             ?></td>
                         <td>
-                            <?php if ($pt_wrong_ans > 0 and $pt_correct_ans > 0 and $post_test==($pt_wrong_ans+$pt_correct_ans) or 1==1) { ?>
+                            <?php if ($pt_wrong_ans > 0 and $pt_correct_ans > 0 and $post_test == ($pt_wrong_ans + $pt_correct_ans) or 1 == 1) { ?>
                                 <?php
 
                                 $query = "SELECT COUNT(*) as total FROM training_certificates 
@@ -149,17 +149,17 @@
                                     <a class="btn btn-danger btn-sm" href="<?php echo site_url(ADMIN_DIR . 'trainings/generate_certificate/' . $training_id . '/' . $batch_id . '/' . $nomination->user_id) ?>">Generate Certificate</a>
                                 <?php } else { ?>
                                     <a target="_blank" class="btn btn-success btn-sm" href="<?php echo site_url(ADMIN_DIR . 'trainings/print_certificate/' . $training_id . '/' . $batch_id . '/' . $nomination->user_id) ?>">Print Certificate</a>
-                                   <?php  $query = "SELECT certificate_id FROM training_certificates 
+                                    <?php $query = "SELECT certificate_id FROM training_certificates 
                                                     WHERE training_id = '" . $training_id . "'
                                                     AND batch_id = '" . $batch_id . "'
                                                     AND trainee_id = '" . $nomination->user_id . "' ";
-                                           $certificate = $this->db->query($query)->row(); 
+                                    $certificate = $this->db->query($query)->row();
                                     ?>
-                                    <button class="btn btn-warning btn-sm" onclick="get_training_certificate_form('<?php echo $certificate->certificate_id; ?>')" >Edit<botton>
-                                <?php } ?>
-                            <?php } else { ?>
-                                Tests Pending
-                            <?php } ?>
+                                    <button class="btn btn-warning btn-sm" onclick="get_training_certificate_form('<?php echo $certificate->certificate_id; ?>')">Edit<botton>
+                                        <?php } ?>
+                                    <?php } else { ?>
+                                        Tests Pending
+                                    <?php } ?>
                         </td>
 
 
@@ -176,20 +176,20 @@
 
 <hr class="margin-bottom-0">
 <script>
-            function get_training_certificate_form(certificate_id) {
-                $.ajax({
-                        method: "POST",
-                        url: "<?php echo site_url(ADMIN_DIR . 'trainings/get_training_certificate_form'); ?>",
-                        data: {
-                            certificate_id: certificate_id
-                        },
-                    })
-                    .done(function(respose) {
-                        $('#g_modal').modal('show');
-                        $('#modal_title').html('Training Certificates');
-                        $('#g_modal_body').html(respose);
-                    });
-            }
+    function get_training_certificate_form(certificate_id) {
+        $.ajax({
+                method: "POST",
+                url: "<?php echo site_url(ADMIN_DIR . 'trainings/get_training_certificate_form'); ?>",
+                data: {
+                    certificate_id: certificate_id
+                },
+            })
+            .done(function(respose) {
+                $('#g_modal').modal('show');
+                $('#modal_title').html('Training Certificates');
+                $('#g_modal_body').html(respose);
+            });
+    }
 </script>
 <script>
     <?php $table_title = "For Training " . $training->title . "(Code: " . $training->code . ") " . " Batch: " . $title . " " . date('d-m-Y h:m:s'); ?>
