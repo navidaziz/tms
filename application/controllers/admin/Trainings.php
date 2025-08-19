@@ -1702,4 +1702,24 @@ class Trainings extends Admin_Controller
 
         $this->load->view(ADMIN_DIR . "trainings/training_batch/print_training_batch_schedule", $this->data);
     }
+	
+	 
+	    public function view_reviews($training_id)
+    {
+
+        
+		
+		$training_id = (int) $training_id;
+        $trainings = $this->training_model->get_training($training_id);
+        $this->data["training"] = $trainings[0];
+		
+		
+		 $this->data["training_id"] = $training_id;
+        $this->data["title"] = $this->lang->line('Training Details');
+		
+		
+        $this->data["view"] = ADMIN_DIR . "trainings/view_reviews";
+        $this->load->view(ADMIN_DIR . "layout", $this->data);
+    }
+	
 }

@@ -37,6 +37,7 @@
       </div>
       <div class="box-body">
         <button onclick="add_nomination_form('trainee');" class="btn btn-warning btn-sm"> Add New Trainee</button>
+        <a href="<?php echo base_url("admin/trainings/view_reviews/".$training->training_id);?>" target="_blank" class="btn btn-success btn-sm">View Reviews</a>
         <div class="tabbable header-tabs">
           <ul class="nav nav-tabs">
             <li <?php if ($this->input->get('tab') == 'test') { ?>class="active" <?php } ?>> <a href="<?php echo site_url(ADMIN_DIR . "trainings/view_training/" . $training->training_id) . "?tab=test" ?>"><i class="fa fa-question" aria-hidden="true"></i> <span class="hidden-inline-mobile">Pre and Post Test</span></a> </li>
